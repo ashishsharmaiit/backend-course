@@ -1,0 +1,25 @@
+{
+    "id": "chatcmpl-8eGloMjX94Fp4ljOPrqw8MMQU9DqZ",
+    "choices": [
+        {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+                "content": "{\n  \"books\": [\n    \"Understanding Genetic Inheritance: How Traits Are Passed Down\",\n    \"Genetic Testing: What You Need to Know\",\n    \"The Role of Genetics in Disease Risk\",\n    \"Exploring the Future of Genetic Engineering\"\n  ]\n}",
+                "role": "assistant",
+                "function_call": null,
+                "tool_calls": null
+            }
+        }
+    ],
+    "created": 1704608276,
+    "model": "gpt-3.5-turbo-1106",
+    "object": "chat.completion",
+    "system_fingerprint": "fp_cbe4fa03fe",
+    "usage": {
+        "completion_tokens": 54,
+        "prompt_tokens": 81,
+        "total_tokens": 135
+    }
+}

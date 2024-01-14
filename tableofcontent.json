@@ -1,0 +1,25 @@
+{
+    "id": "chatcmpl-8ebCXpSBujt8N8FKUMsHXV4wogSKR",
+    "choices": [
+        {
+            "finish_reason": "stop",
+            "index": 0,
+            "logprobs": null,
+            "message": {
+                "content": "{\n  \"chapters\": [\n    \"1. Introduction to Genetics and Disease Risk\",\n    \"2. Understanding Inherited Diseases\",\n    \"3. Genetic Mutations and Disease Development\",\n    \"4. Impact of Genetic Variations on Disease Susceptibility\",\n    \"5. Genetic Testing for Disease Risk\",\n    \"6. Genetic Counseling and Disease Prevention\",\n    \"7. Genetics of Common Diseases\",\n    \"8. Genetics of Rare Diseases\",\n    \"9. Epigenetics and Disease Risk\",\n    \"10. Future Perspectives in Genetic Disease Research\"\n  ]\n}",
+                "role": "assistant",
+                "function_call": null,
+                "tool_calls": null
+            }
+        }
+    ],
+    "created": 1704686813,
+    "model": "gpt-3.5-turbo-1106",
+    "object": "chat.completion",
+    "system_fingerprint": "fp_cbe4fa03fe",
+    "usage": {
+        "completion_tokens": 116,
+        "prompt_tokens": 105,
+        "total_tokens": 221
+    }
+}

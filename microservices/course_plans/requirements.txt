@@ -1,0 +1,14 @@
+regex
+openai
+pytz
+tiktoken
+rapidfuzz
+python-Levenshtein
+google-auth
+google-auth-oauthlib
+google-cloud-logging==3.3.0
+firebase_admin
+nltk
+functions_framework
+pydantic
+python-ulid

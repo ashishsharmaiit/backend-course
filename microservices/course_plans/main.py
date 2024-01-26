@@ -19,6 +19,7 @@ with open(os.path.join(current_dir, 'openai_key.json'), 'r') as infile:
 	os.environ['OPENAI_API_KEY'] = key_document['openai_key_primary']
 	
 openai_client = OpenAI(
+  organization="org-9ckxNJxqNOipkJbzJDpgoyA6",
   api_key=os.environ['OPENAI_API_KEY'],
 )
 
@@ -33,6 +34,7 @@ class CourseOptions(TypedDict):
 
 def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo", max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
 	messages = []
+	msg_content = None
 	if not use_assistants:
 		# add instructions for chat completion api
 		messages = [
@@ -112,23 +114,23 @@ def main_course_plan(course_options: CourseOptions):
 				instructions = f.read()
 		'''Construct prompt query'''
 		current_query = ''
-		if (len(course_options.topic) > 0):
-			current_query += f"I want to learn about {course_options.topic} in {course_options.duration}."
-		if (len(course_options.teachingStyle) > 0):
-			current_query += f"I prefer a teaching style that is {course_options.teachingStyle}."
-		if (len(course_options.focusOn) > 0):
-			current_query += f"I want to focus more on {course_options.focusOn}."
-		if (len(course_options.previousKnowledge) > 0):
-			current_query += f"I already know about {course_options.previousKnowledge}."
-		if (len(course_options.purposeFor) > 0):
-			current_query += f"I want to learn this for {course_options.purposeFor}."
-		if (len(course_options.otherConsiderations) > 0):
-			current_query += f"Some other things that you can consider - {course_options.otherConsiderations}."
+		if (len(course_options.get('topic', '')) > 0):
+			current_query += f"I want to learn about {course_options.get('topic', '')} in {course_options.get('duration', '')}."
+		if (len(course_options.get('teachingStyle', '')) > 0):
+			current_query += f"I prefer a teaching style that is {course_options.get('teachingStyle', '')}."
+		if (len(course_options.get('focusOn', '')) > 0):
+			current_query += f"I want to focus more on {course_options.get('focusOn', '')}."
+		if (len(course_options.get('previousKnowledge', '')) > 0):
+			current_query += f"I already know about {course_options.get('previousKnowledge', '')}."
+		if (len(course_options.get('purposeFor', '')) > 0):
+			current_query += f"I want to learn this for {course_options.get('purposeFor', '')}."
+		if (len(course_options.get('otherConsiderations', '')) > 0):
+			current_query += f"Some other things that you can consider - {course_options.get('otherConsiderations', '')}."
 		current_query += "Please create a course plan for me."
 		plan = ask_llm(instructions, current_query)
 		response = {'plan': plan,
 			'status': 200,
-			'error': str(e),
+			'error': None,
 			'timestamp': int(time.time())
 		}
 	except Exception as e:

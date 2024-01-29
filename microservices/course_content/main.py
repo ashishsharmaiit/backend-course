@@ -48,7 +48,7 @@ class SectionDetails(TypedDict):
 	SectionTime: Required[str]
 
 
-def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo", max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
+def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo", response_format={"type": "json_object"}, max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
 	messages = []
 	msg_content = None
 	if not use_assistants:
@@ -130,10 +130,16 @@ def get_lesson_plan(section_details: SectionDetails):
                 instructions = f.read()
 
         '''Construct prompt query based on SectionDetails'''
-        current_query = (f"Create a lesson plan for a section titled '{section_details['SectionName']}' "
-                         f"covering the topics '{section_details['SectionTopics']}'. "
-                         f"The objective of this section is to '{section_details['SectionObjective']}'. "
-                         f"The total time allocated for this section is {section_details['SectionTime']}.")
+        current_query = (
+            f"Create a chapter and lesson plan for a section titled '{section_details['SectionName']}' "
+            f"covering the topics '{section_details['SectionTopics']}'. "
+            f"The objective of this section is to '{section_details['SectionObjective']}'. "
+            f"The total time allocated for this section is {section_details['SectionTime']}. "
+            f"Organize the content into multiple chapters and within each chapter include multiple lessons. "
+            f"Format the output as JSON. For example: "
+            f"{{\"Chapters\": [{{\"ChapterTitle\": \"Example Chapter 1\", \"Lessons\": [{{\"LessonTitle\": \"Lesson 1\", \"Content\": \"...\"}}, {{\"LessonTitle\": \"Lesson 2\", \"Content\": \"...\"}}]}}]}}"
+)
+
 
         lesson_plan = ask_llm(instructions, current_query)
         response = {'plan': lesson_plan,
@@ -177,5 +183,22 @@ section_1_details = load_section_details(1)
 if section_1_details:
     lesson_plan_response = get_lesson_plan(section_1_details)
     print(lesson_plan_response)
+    try:
+        lesson_plan_json = json.loads(lesson_plan_response['plan'])
+    except json.JSONDecodeError as e:
+        print("Error parsing lesson plan JSON:", e)
+        lesson_plan_json = {}
 else:
     print("Section 1 details not found.")
+
+
+section_number = section_1_details["SectionNumber"]
+
+# MongoDB update operation
+update_result = courses_collection.update_one(
+    {"Course Plan.SectionNumber": section_number},
+    {"$set": {"Course Plan.$.LessonPlan": lesson_plan_json}}
+)
+
+print(f"Updated {update_result.modified_count} document(s) in MongoDB.")
+

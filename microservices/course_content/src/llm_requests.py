@@ -91,7 +91,7 @@ def get_lesson_plan(openai_client, section_details: SectionDetails, lesson_data_
 
 	current_dir = os.path.dirname(os.path.abspath(__file__))
 
-	if test_mode:
+	if lesson_data_test_mode:
 		# Read the lesson plan from the file in test mode
 		lesson_plan_file = os.path.join(current_dir, '../lesson_data.json')
 		with open(lesson_plan_file, 'r') as file:
@@ -134,6 +134,57 @@ def get_lesson_plan(openai_client, section_details: SectionDetails, lesson_data_
 
 		except Exception as e:
 			print('Error in get_lesson_plan function')
+			traceback.print_exc()  # printing stack trace
+			response = {'plan': None,
+						'status': 400,
+						'error': str(e),
+						'timestamp': int(time.time())
+			}
+
+def get_lesson_content(openai_client, lesson_request, lesson_content_test_mode=False):
+
+	current_dir = os.path.dirname(os.path.abspath(__file__))
+
+	if lesson_content_test_mode:
+		# Read the lesson plan from the file in test mode
+		lesson_plan_file = os.path.join(current_dir, '../lesson_content.json')
+		with open(lesson_plan_file, 'r') as file:
+			response = json.load(file)
+		return response
+	else:
+		try:
+			'''Load prompt instructions'''
+			instructions = 'You are an AI tutor.'
+
+			system_file = os.path.join(current_dir, '../prompt.md')
+			if os.path.exists(system_file):
+				with io.open(system_file, 'r', encoding='utf-8') as f:
+					instructions = f.read()
+			'''Construct prompt query based on SectionDetails'''
+			current_query = (
+				f"Create a 700 words content for the lesson titled '{lesson_request['lesson_title']}' "
+				f"which is within the chapter of '{lesson_request['chapter_title']}'. "
+				f". The objective of this content is '{lesson_request['lesson_content']}'. "
+				f"Format the output as JSON. For example: "
+				f"{{\"content\": \"<lesson_content>\}}"
+				)
+
+
+			lesson_content = ask_llm(openai_client, instructions, current_query)
+			response = {'plan': lesson_content,
+						'status': 200,
+						'error': None,
+						'timestamp': int(time.time())
+			}
+
+			# Save the lesson plan to a JSON file
+			lesson_content_file = os.path.join(current_dir, '../lesson_content.json')
+			with open(lesson_content_file, 'w') as file:
+				json.dump(response, file, indent=4)
+			return response
+
+		except Exception as e:
+			print('Error in get_lesson_content function')
 			traceback.print_exc()  # printing stack trace
 			response = {'plan': None,
 						'status': 400,

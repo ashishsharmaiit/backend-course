@@ -1,16 +1,15 @@
-from db_connection import get_db_connection
+from db_code import get_db_connection, update_lesson_content
 from openai_client import get_openai_client
 from llm_requests import get_lesson_plan, get_lesson_content
 from utils import load_section_details, extract_lesson_data
 import json
 
-lesson_data_test_mode = True  # or False, depending on your testing scenario
+#test modes flags
+lesson_data_test_mode = True  
 lesson_content_test_mode = True
 
-# MongoDB setup
+# MongoDB and OpenAI setup
 courses_collection = get_db_connection()
-
-# OpenAI client setup
 openai_client = get_openai_client()
 
 # Load course data from JSON file
@@ -25,7 +24,6 @@ except FileNotFoundError:
 insertion_result = courses_collection.insert_one(course_data)
 inserted_id = insertion_result.inserted_id
 print(f"Course data has been inserted into MongoDB with _id: {inserted_id}")
-
 
 
 # Load details for section 1
@@ -53,7 +51,25 @@ if section_1_details:
 else:
 	print("Section 1 details not found.")
 
-lesson_request = extract_lesson_data(lesson_plan_json, 0, 0)
+chapter_num = 0  # Assuming you want to update the first chapter
+lesson_num = 0  # Assuming you want to update the first lesson
+lesson_request = extract_lesson_data(lesson_plan_json, chapter_num, lesson_num)
 
 lesson_content = get_lesson_content(openai_client, lesson_request, lesson_content_test_mode)
+
 print(lesson_content)
+
+lesson_db_entry = lesson_content.get('plan', '{}')
+
+# Check if lesson_db_entry is a string and convert it to a dictionary
+if isinstance(lesson_db_entry, str):
+    lesson_db_entry = json.loads(lesson_db_entry)
+
+# Extract the detailed content if it exists
+if 'content' in lesson_db_entry:
+    detailed_content = lesson_db_entry['content']
+else:
+    detailed_content = ''
+
+# Call the function to update the lesson content in MongoDB with detailed_content
+update_lesson_content(courses_collection, inserted_id, section_1_details["SectionNumber"], chapter_num, lesson_num, detailed_content)

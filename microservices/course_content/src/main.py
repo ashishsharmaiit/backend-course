@@ -28,10 +28,13 @@ def process_course_data(request):
     }
 
     try:
-        # Load course data from JSON file
-        with open('../test_data.json', 'r') as course_file:
-            course_data = json.load(course_file)
-        
+        # Check if the Content-Type is 'application/json'
+        if request.headers['Content-Type'] == 'application/json':
+            # Load course data from the request body
+            course_data = request.get_json()
+        else:
+            return ('Content-Type not supported!', 415, headers)
+     
         # Insert the data into the collection
         insertion_result = courses_collection.insert_one(course_data)
         inserted_id = insertion_result.inserted_id

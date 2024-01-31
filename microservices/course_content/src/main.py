@@ -13,6 +13,20 @@ def process_course_data(request):
     courses_collection = get_db_connection()
     openai_client = get_openai_client()
 
+    if request.method == 'OPTIONS':
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '3600'
+        }
+        return ('', 204, headers)
+
+    # Set CORS headers for the main request
+    headers = {
+        'Access-Control-Allow-Origin': '*'
+    }
+
     try:
         # Load course data from JSON file
         with open('../test_data.json', 'r') as course_file:
@@ -49,10 +63,10 @@ def process_course_data(request):
                 "lesson_plan": lesson_plan_json,
                 "detailed_content": detailed_content
             }
-            return (json.dumps(response_data), 200, {'Content-Type': 'application/json'})
+            return (json.dumps(response_data), 200, headers)
         else:
             return ("Section details not found", 404)
 
     except Exception as e:
-        return (f"An error occurred: {str(e)}", 500)
+        return (f"An error occurred: {str(e)}", 500, headers)
 

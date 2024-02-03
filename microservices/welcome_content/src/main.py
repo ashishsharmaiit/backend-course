@@ -1,6 +1,7 @@
 import functions_framework
 from openai_base import get_openai_client
-from llm_prompts import get_welcome_content
+from llm_prompts import get_welcome_content,get_lesson_plan, get_lesson_content
+from utils import load_section_details, extract_lesson_data
 import json
 import logging
 import os
@@ -12,6 +13,9 @@ logging.basicConfig(level=logging.DEBUG)
 def process_welcome_data(request):
 
 	welcome_content_test_mode = True
+	lesson_data_test_mode = True  
+	lesson_content_test_mode = True
+
 	courses_collection = get_db_connection()
 	openai_client = get_openai_client()
 
@@ -68,9 +72,27 @@ def process_welcome_data(request):
 
 
 		if progress_status == 0 and course_id:
+			section_num = 1
+			section_1_details = load_section_details(course_data, section_num)
+			lesson_plan_response = get_lesson_plan(openai_client, section_1_details, lesson_data_test_mode)
+			lesson_plan_json = json.loads(lesson_plan_response.get('plan', '{}'))
+			
+			chapter_num, lesson_num = 0, 0
+			
+			lesson_request = extract_lesson_data(lesson_plan_json, chapter_num, lesson_num)
+			lesson_content = get_lesson_content(openai_client, lesson_request, lesson_content_test_mode)
+			detailed_content = lesson_content.get('plan', {})
+			lesson_content_text = detailed_content.get('content', '')
+			
+			section_heading = f"Section {section_num}: {section_1_details.get('SectionName', '')}"
+			#logging.debug(f"Received lesson_plan_json: {lesson_request}")
+
+			chapter_heading = lesson_request['chapter_title']
+
+
 			response = {
 				"course_content": 
-				{1: {"h1": "Section 1", "h2": "", "content": "This is test Section 1 content"}}			
+				{1: {"h1": section_heading, "h2": chapter_heading, "content": lesson_content_text}}			
 				}
 			return (json.dumps(response), 200, headers)
 

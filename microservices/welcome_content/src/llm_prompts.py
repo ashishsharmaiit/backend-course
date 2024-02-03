@@ -11,6 +11,12 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
+class SectionDetails(TypedDict):
+	SectionNumber: Required[str]
+	SectionName: Required[str]
+	SectionTopics: Required[str]
+	SectionObjective: Required[str]
+	SectionTime: Required[str]
 
 def get_welcome_content(openai_client, course_options, course_plan_str, welcome_content_test_mode):
 	current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -79,4 +85,110 @@ def get_welcome_content(openai_client, course_options, course_plan_str, welcome_
 			}
 
 
+def get_lesson_plan(openai_client, section_details: SectionDetails, lesson_data_test_mode=False):
 
+	current_dir = os.path.dirname(os.path.abspath(__file__))
+
+	if lesson_data_test_mode:
+		# Read the lesson plan from the file in test mode
+		lesson_plan_file = os.path.join(current_dir, '../lesson_data.json')
+		with open(lesson_plan_file, 'r') as file:
+			response = json.load(file)
+		return response
+	else:
+		try:
+			'''Load prompt instructions'''
+			instructions = 'You are an AI tutor.'
+
+			system_file = os.path.join(current_dir, '../prompt.md')
+			if os.path.exists(system_file):
+				with io.open(system_file, 'r', encoding='utf-8') as f:
+					instructions = f.read()
+
+			'''Construct prompt query based on SectionDetails'''
+			current_query = (
+				f"Create a chapter and lesson plan for a section titled '{section_details['SectionName']}' "
+				f"covering the topics '{section_details['SectionTopics']}'. "
+				f"The objective of this section is to '{section_details['SectionObjective']}'. "
+				f"The total time allocated for this section is {section_details['SectionTime']}. "
+				f"Organize the content into multiple chapters and within each chapter include multiple lessons. "
+				f"Format the output as JSON. For example: "
+				f"{{\"Chapters\": [{{\"ChapterTitle\": \"Example Chapter 1\", \"Lessons\": [{{\"LessonTitle\": \"Lesson 1\", \"Content\": \"...\"}}, {{\"LessonTitle\": \"Lesson 2\", \"Content\": \"...\"}}]}}]}}"
+				)
+
+
+			lesson_plan = ask_llm(openai_client, instructions, current_query)
+			response = {'plan': lesson_plan,
+						'status': 200,
+						'error': None,
+						'timestamp': int(time.time())
+			}
+
+			# Save the lesson plan to a JSON file
+			lesson_plan_file = os.path.join(current_dir, '../lesson_data.json')
+			with open(lesson_plan_file, 'w') as file:
+				json.dump(response, file, indent=4)
+			return response
+
+		except Exception as e:
+			print('Error in get_lesson_plan function')
+			traceback.print_exc()  # printing stack trace
+			response = {'plan': None,
+						'status': 400,
+						'error': str(e),
+						'timestamp': int(time.time())
+			}
+
+
+def get_lesson_content(openai_client, lesson_request, lesson_content_test_mode=False):
+
+	current_dir = os.path.dirname(os.path.abspath(__file__))
+
+	if lesson_content_test_mode:
+		# Read the lesson plan from the file in test mode
+		lesson_plan_file = os.path.join(current_dir, '../lesson_content.json')
+		with open(lesson_plan_file, 'r') as file:
+			response = json.load(file)
+		return response
+	else:
+		try:
+			'''Load prompt instructions'''
+			instructions = 'You are an AI tutor.'
+			system_file = os.path.join(current_dir, '../prompt.md')
+			if os.path.exists(system_file):
+				with io.open(system_file, 'r', encoding='utf-8') as f:
+					instructions = f.read()
+			'''Construct prompt query based on SectionDetails'''
+			current_query = (
+				f"Create a 700 words content for the lesson titled '{lesson_request['lesson_title']}' "
+				f"which is within the chapter of '{lesson_request['chapter_title']}'. "
+				f". The objective of this content is '{lesson_request['lesson_content']}'. "
+				f"Format the output as JSON. For example: "
+				f"{{\"content\": \"<lesson_content>\"}}"
+				)
+
+
+			lesson_content = ask_llm(openai_client, instructions, current_query)
+			
+			# Attempt to parse lesson_content as JSON
+			try:
+				parsed_content = json.loads(lesson_content)
+				response = {'plan': parsed_content, 'status': 200, 'error': None, 'timestamp': int(time.time())}
+			except json.JSONDecodeError as json_err:
+				print(f"JSON parsing error: {json_err}")
+				response = {'plan': {}, 'status': 200, 'error': "Failed to parse lesson content as JSON.", 'timestamp': int(time.time())}
+			
+			# Save the lesson plan to a JSON file
+			lesson_content_file = os.path.join(current_dir, '../lesson_content.json')
+			with open(lesson_content_file, 'w') as file:
+				json.dump(response, file, indent=4)
+			return response
+
+		except Exception as e:
+			print('Error in get_lesson_content function')
+			traceback.print_exc()  # printing stack trace
+			response = {'plan': None,
+						'status': 400,
+						'error': str(e),
+						'timestamp': int(time.time())
+			}

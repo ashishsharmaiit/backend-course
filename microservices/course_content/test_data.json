@@ -36,7 +36,7 @@
             "SectionTime": "3 hours"
         }
     ],
-    "Course Inputs": {
+    "Course_Inputs": {
         "topic": "Neural Networks for Robotics",
         "duration": "15 hours",
         "teachingStyle": "Interactive with hands-on projects",
@@ -44,5 +44,10 @@
         "purposeFor": "Educational",
         "previousKnowledge": "Basic programming and robotics",
         "otherConsiderations": "Access to computational resources for deep learning"
+    },
+	"Progress_Status": {
+        "section": 0,
+        "chapter": 0,
+        "lesson": 0
     }
 }

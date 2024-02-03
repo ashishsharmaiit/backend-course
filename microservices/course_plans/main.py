@@ -5,6 +5,7 @@ import time
 import openai
 from openai import OpenAI
 import random
+import regex
 import traceback
 import functions_framework # type: ignore
 import tiktoken # type: ignore
@@ -31,6 +32,22 @@ class CourseOptions(TypedDict):
 	purposeFor: NotRequired[str]
 	previousKnowledge: NotRequired[str]
 	otherConsiderations: NotRequired[str]
+	
+def substring_between_patterns(text, pattern1, pattern2):
+	# ensure start and end patterns don't have round brackets
+	pattern = pattern1 + '([\s\S]*?)' + pattern2
+	expression = regex.compile(pattern)
+	substring = regex.search(expression, text)
+	return (substring.group(1) if bool(substring) else '')
+	
+def json_from_response(response):
+	options: CourseOptions = {
+		'topic': substring_between_patterns(response, '<topic>', '</topic>'),
+		'duration': substring_between_patterns(response, '<duration>', '</duration>'),
+        'teachingStyle': substring_between_patterns(response, '<teaching-style>', '</teaching-style>')
+    }
+	plan = substring_between_patterns(response, '<content>', '</content>')
+	return plan, options
 
 def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo", max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
 	messages = []
@@ -127,8 +144,10 @@ def main_course_plan(course_options: CourseOptions):
 		if (len(course_options.get('otherConsiderations', '')) > 0):
 			current_query += f"Some other things that you can consider - {course_options.get('otherConsiderations', '')}."
 		current_query += "Please create a course plan for me."
-		plan = ask_llm(instructions, current_query)
+		plan_text = ask_llm(instructions, current_query)
+		plan, options = json_from_response(plan_text)
 		response = {'plan': plan,
+			'options': options,
 			'status': 200,
 			'error': None,
 			'timestamp': int(time.time())
@@ -137,6 +156,7 @@ def main_course_plan(course_options: CourseOptions):
 		print('Google cloud function error')
 		traceback.print_exc() # printing stack trace
 		response = {'plan': None,
+			'options': None,
 			'status': 400,
 			'error': str(e),
 			'timestamp': int(time.time())

@@ -8,7 +8,7 @@ import traceback
 import tiktoken # type: ignore
 from openai_base import ask_llm
 
-def get_welcome_content(openai_client, course_options, welcome_content_test_mode):
+def get_welcome_content(openai_client, course_options, course_plan_str, welcome_content_test_mode):
 	current_dir = os.path.dirname(os.path.abspath(__file__))
 
 	if welcome_content_test_mode:
@@ -40,16 +40,18 @@ def get_welcome_content(openai_client, course_options, welcome_content_test_mode
 				current_query += f"Learner wants to learn this for {course_options.get('purposeFor', '')}."
 			if (len(course_options.get('otherConsiderations', '')) > 0):
 				current_query += f"Some other things that you can consider are - {course_options.get('otherConsiderations', '')}."
-			current_query += "Give a fun fact about the topic that the learner wants to learn within 200 words, and give a brief introduction about the importance of learning this topic within 500 words, so that the learner feels encouraged about continue learning it. Give this input in JSON input such as {{\"fun_fact\": \"<fun_fact_content>\", \"intro\": \"<intro_content>\" }}"
+			if (len(course_plan_str) > 0):
+				current_query += f"The course plan that the learner agreed on is - {course_plan_str}."
+			current_query += "You now need to welcome the learner with a welcome message, welcoming the learner to this course. Give a little fun fact about what the learner is trying to learn, little reaffirmation the importance of what learner is learning and give a little detail about the course plan and how you will teach the user with the course plan. Then at the end, have a sentence to connect to the first section after this welcome message. Have this entire messae within 500 words. The narrative should be exciting. Have the content in JSON format such as {{\"content\": \"<welcome_content>\"}}"
 
+			welcome_content = ask_llm(openai_client, instructions, current_query)
 
+			welcome_content_dict = json.loads(welcome_content)
 
-			lesson_content = ask_llm(openai_client, instructions, current_query)
-			response = {'plan': lesson_content,
-						'status': 200,
-						'error': None,
-						'timestamp': int(time.time())
-			}
+			response_pre = f"{welcome_content_dict['content']}"
+
+			# Replace escaped newline characters with actual newlines
+			response = response_pre.replace('\\n', '\n')
 
 			welcome_content_test_file = os.path.join(current_dir, '../welcome_content_test_file.json')
 			with open(welcome_content_test_file, 'w') as file:
@@ -57,7 +59,7 @@ def get_welcome_content(openai_client, course_options, welcome_content_test_mode
 			return response
 
 		except Exception as e:
-			print('Error in get_lesson_content function')
+			print('Error in get_welcome_content function')
 			traceback.print_exc()  # printing stack trace
 			response = {'plan': None,
 						'status': 400,

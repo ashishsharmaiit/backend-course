@@ -29,7 +29,6 @@ def process_welcome_data(request):
 	try:
 		if request.headers['Content-Type'] == 'application/json':
 			course_data = request.get_json()
-			logging.debug(f"Received course data: {course_data}")
 		else:
 			return ('Content-Type not supported!', 415, headers)
 
@@ -38,13 +37,28 @@ def process_welcome_data(request):
 		course_inputs = course_data.get("course_options", {})
 		section_progress = progress_status.get("section_status")
 
+		course_plan = course_data.get("course_plan", {})
+		logging.debug(f"Received course data: {course_plan}")
+
+		# Initialize an empty list to hold formatted section descriptions
+		formatted_sections = []
+
+		for section in course_plan:
+			# Format each section's details into a readable string
+			section_str = f"Section {section.get('SectionNumber')}: {section.get('SectionName')}, Topics: {section.get('SectionTopics')}, Objective: {section.get('SectionObjective')}, Duration: {section.get('SectionTime')}."
+			formatted_sections.append(section_str)
+
+		# Join all section descriptions into a single string with line breaks or any other separator you prefer
+		course_plan_str = " ".join(formatted_sections)
+
+
 		inserted_id = None
 
 		if section_progress == 0 and not course_id:
 			insertion_result = courses_collection.insert_one(course_data)
 			inserted_id = insertion_result.inserted_id
 			
-			welcome_content = get_welcome_content(openai_client, course_inputs, welcome_content_test_mode)
+			welcome_content = get_welcome_content(openai_client, course_inputs, course_plan_str, welcome_content_test_mode)
 
 			response = {
 				"course_id": str(inserted_id),

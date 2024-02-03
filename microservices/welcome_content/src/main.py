@@ -32,10 +32,9 @@ def process_welcome_data(request):
 		else:
 			return ('Content-Type not supported!', 415, headers)
 
-		progress_status = course_data.get("Progress_Status", {})
+		progress_status = course_data.get("Progress_Status", 0)
 		course_id = course_data.get("course_id", "")
 		course_inputs = course_data.get("course_options", {})
-		section_progress = progress_status.get("section_status")
 
 		course_plan = course_data.get("course_plan", {})
 		logging.debug(f"Received course data: {course_plan}")
@@ -54,7 +53,7 @@ def process_welcome_data(request):
 
 		inserted_id = None
 
-		if section_progress == 0 and not course_id:
+		if progress_status == 0 and not course_id:
 			insertion_result = courses_collection.insert_one(course_data)
 			inserted_id = insertion_result.inserted_id
 			
@@ -62,8 +61,32 @@ def process_welcome_data(request):
 
 			response = {
 				"course_id": str(inserted_id),
-				"welcome_content": welcome_content
+				"course_content": welcome_content
 			}
+
+			return (json.dumps(response), 200, headers)
+
+
+		if progress_status == 0 and course_id:
+			response = {
+				"course_content": 
+				{1: {"h1": "Section 1", "h2": "", "content": "This is test Section 1 content"}}			
+				}
+			return (json.dumps(response), 200, headers)
+
+
+		if progress_status == 1 and course_id:
+			response = {
+				"course_content": 
+				{2: {"h1": "Section 2", "h2": "", "content": "This is test Section 2 content"}}			
+				}
+			return (json.dumps(response), 200, headers)
+
+		if progress_status == 2 and course_id:
+			response = {
+				"course_content": 
+				{3: {"h1": "Section 3", "h2": "", "content": "This is test Section 3 content"}}			
+				}
 			return (json.dumps(response), 200, headers)
 
 	except json.JSONDecodeError as json_err:

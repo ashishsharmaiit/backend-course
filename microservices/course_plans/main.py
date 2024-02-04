@@ -168,10 +168,9 @@ def http_course_plan(request):
 	request_json = request.get_json()
 	request_args = request.args
 	run_job = False
-	print(request_json)
 	# Set CORS headers for the preflight request
 	if request.method == 'OPTIONS':
-		# Allows GET requests from any origin with the Content-Type
+		# Allows POST requests from any origin with the Content-Type
 		# header and caches preflight response for an 3600s
 		headers = {
 			'Access-Control-Allow-Origin': '*',

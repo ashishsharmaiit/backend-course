@@ -1,8 +1,12 @@
 ## Locally running cloud functions
 
-`functions-framework-python --target <function-entry-name>`
+`functions-framework --target=http_course_plan`
 
 function will be available at http://localhost:8080
+
+Test command,
+
+`curl -H 'Content-Type: application/json' -X POST -d '{"course_options": {"topic": "Neural net for Robotics", "duration": "5 weeks", "teachingStyle": "easy to understand language, quiz me after every lesson, give practice assignments", "focusOn": "", "purposeFor": "", "previousKnowledge": "", "otherConsiderations": ""}}' http://localhost:8080`
 
 ## Deploy functions
 

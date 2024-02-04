@@ -165,9 +165,10 @@ def main_course_plan(course_options: CourseOptions):
 
 @functions_framework.http
 def http_course_plan(request):
-	request_json = request.get_json(silent=True)
+	request_json = request.get_json()
 	request_args = request.args
 	run_job = False
+	print(request_json)
 	# Set CORS headers for the preflight request
 	if request.method == 'OPTIONS':
 		# Allows GET requests from any origin with the Content-Type
@@ -195,6 +196,7 @@ def http_course_plan(request):
 		res = main_course_plan(course_options)
 		return (res, 200, headers)
 	res = {'plan': None,
+		'options': None,
 		'status': 500,
 		'error': 'Invalid query arguments',
 		'timestamp': int(time.time())

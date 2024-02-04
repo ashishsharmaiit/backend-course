@@ -10,13 +10,11 @@ Test command,
 
 ## Deploy functions
 
-gcloud functions deploy python-http-function \
-    --gen2 \
-    --runtime=python312 \
-    --region=REGION \
-    --source=. \
-    --entry-point=hello_http \
-    --trigger-http
+`gcloud functions deploy course_plan_generator --runtime=python311 --entry-point=http_course_plan --trigger-http --memory=256MB --timeout=540s`
+
+The functions is deployed at, 
+
+https://us-central1-socratiq.cloudfunctions.net/course_plan_generator
 
 ## Deploy lamda functions
 

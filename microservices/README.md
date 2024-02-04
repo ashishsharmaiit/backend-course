@@ -16,6 +16,10 @@ The functions is deployed at,
 
 https://us-central1-socratiq.cloudfunctions.net/course_plan_generator
 
+Change gcloud project,
+
+
+
 ## Deploy lamda functions
 
 [href]https://docs.aws.amazon.com/lambda/latest/dg/python-package.html

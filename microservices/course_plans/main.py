@@ -33,6 +33,46 @@ class CourseOptions(TypedDict):
 	previousKnowledge: NotRequired[str]
 	otherConsiderations: NotRequired[str]
 	
+@functions_framework.http
+def http_course_plan(request):
+	request_json = request.get_json()
+	request_args = request.args
+	run_job = False
+	# Set CORS headers for the preflight request
+	if request.method == 'OPTIONS':
+		# Allows POST requests from any origin with the Content-Type
+		# header and caches preflight response for an 3600s
+		headers = {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'POST',
+			'Access-Control-Allow-Headers': 'Content-Type',
+			'Access-Control-Max-Age': '3600'
+		}
+		return ({}, 204, headers)
+	# Set CORS headers for the main request
+	headers = {
+		'Access-Control-Allow-Origin': '*',
+		'Access-Control-Allow-Methods': 'POST',
+		'Access-Control-Allow-Headers': 'Content-Type',
+	}
+	if request_json:
+		course_options: CourseOptions = request_json.get('course_options', {})
+		run_job = True
+	elif request_args:
+		course_options: CourseOptions = request_args.get('course_options', {})
+		run_job = True
+	if run_job:
+		print("Course plan query for user @ {}".format(time.time()))
+		res = main_course_plan(course_options)
+		return (res, 200, headers)
+	res = {'plan': None,
+		'options': None,
+		'status': 500,
+		'error': 'Invalid query arguments',
+		'timestamp': int(time.time())
+	}
+	return (res, 200, headers)
+	
 def substring_between_patterns(text, pattern1, pattern2):
 	# ensure start and end patterns don't have round brackets
 	pattern = pattern1 + '([\s\S]*?)' + pattern2
@@ -162,42 +202,3 @@ def main_course_plan(course_options: CourseOptions):
 			'timestamp': int(time.time())
 		}
 	return response
-
-@functions_framework.http
-def http_course_plan(request):
-	request_json = request.get_json()
-	request_args = request.args
-	run_job = False
-	# Set CORS headers for the preflight request
-	if request.method == 'OPTIONS':
-		# Allows POST requests from any origin with the Content-Type
-		# header and caches preflight response for an 3600s
-		headers = {
-			'Access-Control-Allow-Origin': '*',
-			'Access-Control-Allow-Methods': 'POST',
-			'Access-Control-Allow-Headers': 'Content-Type',
-			'Access-Control-Max-Age': '3600'
-		}
-		return ({}, 204, headers)
-	# Set CORS headers for the main request
-	headers = {
-		'Access-Control-Allow-Methods': 'POST',
-		'Access-Control-Allow-Origin': '*'
-	}
-	if request_json:
-		course_options: CourseOptions = request_json.get('course_options', {})
-		run_job = True
-	elif request_args:
-		course_options: CourseOptions = request_args.get('course_options', {})
-		run_job = True
-	if run_job:
-		print("Course plan query for user @ {}".format(time.time()))
-		res = main_course_plan(course_options)
-		return (res, 200, headers)
-	res = {'plan': None,
-		'options': None,
-		'status': 500,
-		'error': 'Invalid query arguments',
-		'timestamp': int(time.time())
-	}
-	return (res, 200, headers)

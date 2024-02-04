@@ -1,20 +1,21 @@
 import functions_framework
 from openai_base import get_openai_client
 from llm_prompts import get_welcome_content,get_lesson_plan, get_lesson_content
-from utils import load_section_details, extract_lesson_data
+from utils import extract_lesson_data, check_lesson_exists, generate_and_update_lesson_plan
 import json
 import logging
 import os
 from db_code import get_db_connection
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(filename='app_logs.log', level=logging.DEBUG, 
+                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logger = logging.getLogger(__name__)
 
 @functions_framework.http
 def process_welcome_data(request):
 
 	welcome_content_test_mode = True
-	lesson_data_test_mode = True  
-	lesson_content_test_mode = True
+	lesson_content_test_mode = False
 
 	courses_collection = get_db_connection()
 	openai_client = get_openai_client()
@@ -71,44 +72,51 @@ def process_welcome_data(request):
 			return (json.dumps(response), 200, headers)
 
 
-		if progress_status == 0 and course_id:
-			section_num = 1
-			section_1_details = load_section_details(course_data, section_num)
-			lesson_plan_response = get_lesson_plan(openai_client, section_1_details, lesson_data_test_mode)
-			lesson_plan_json = json.loads(lesson_plan_response.get('plan', '{}'))
+		if course_id:
+			find_unique_lesson_num = progress_status + 1
+
 			
-			chapter_num, lesson_num = 0, 0
+			exists, sec_index, chapter_num, lesson_num = check_lesson_exists(course_plan, find_unique_lesson_num)
+			logging.debug(f"Values: {exists}, {sec_index},{chapter_num},{lesson_num},")
 			
-			lesson_request = extract_lesson_data(lesson_plan_json, chapter_num, lesson_num)
+			
+			section_num = sec_index + 1
+
+			
+			if not exists:
+				course_plan = generate_and_update_lesson_plan(openai_client, course_plan, section_num)
+				logging.debug(f"New Course Plan: {course_plan}")
+				exists, sec_index, chapter_num, lesson_num = check_lesson_exists(course_plan, find_unique_lesson_num)
+				logging.debug(f"Values: {exists}, {sec_index},{chapter_num},{lesson_num},")
+				section_num = sec_index + 1
+
+			
+			lesson_request = extract_lesson_data(course_plan, sec_index, chapter_num, lesson_num)
+			logging.debug(f"lesson_request: {lesson_request}")
+
+			
 			lesson_content = get_lesson_content(openai_client, lesson_request, lesson_content_test_mode)
+			logging.debug(f"lesson_content: {lesson_content}")
+
+			
 			detailed_content = lesson_content.get('plan', {})
 			lesson_content_text = detailed_content.get('content', '')
+			section = course_plan[sec_index]
+
 			
-			section_heading = f"Section {section_num}: {section_1_details.get('SectionName', '')}"
-			#logging.debug(f"Received lesson_plan_json: {lesson_request}")
+			section_heading = f"Section {section_num}: {section.get('SectionName', '')}"
 
 			chapter_heading = lesson_request['chapter_title']
-
+			
 
 			response = {
-				"course_content": 
-				{1: {"h1": section_heading, "h2": chapter_heading, "content": lesson_content_text}}			
-				}
-			return (json.dumps(response), 200, headers)
-
-
-		if progress_status == 1 and course_id:
-			response = {
-				"course_content": 
-				{2: {"h1": "Section 2", "h2": "", "content": "This is test Section 2 content"}}			
-				}
-			return (json.dumps(response), 200, headers)
-
-		if progress_status == 2 and course_id:
-			response = {
-				"course_content": 
-				{3: {"h1": "Section 3", "h2": "", "content": "This is test Section 3 content"}}			
-				}
+							"course_plan": course_plan,
+							"course_content": 
+							{find_unique_lesson_num: 
+								{"h1": section_heading, "h2": chapter_heading, "content": lesson_content_text			
+								}
+							}
+						}
 			return (json.dumps(response), 200, headers)
 
 	except json.JSONDecodeError as json_err:

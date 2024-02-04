@@ -169,13 +169,15 @@ def get_lesson_content(openai_client, lesson_request, lesson_content_test_mode=F
 
 
 			lesson_content = ask_llm(openai_client, instructions, current_query)
-			
-			# Attempt to parse lesson_content as JSON
+			logging.debug(f"lesson_content in llm request: {lesson_content}")
+
+			escaped_content = lesson_content.replace('\n', '\\n')
+
 			try:
-				parsed_content = json.loads(lesson_content)
+				parsed_content = json.loads(escaped_content)
 				response = {'plan': parsed_content, 'status': 200, 'error': None, 'timestamp': int(time.time())}
 			except json.JSONDecodeError as json_err:
-				print(f"JSON parsing error: {json_err}")
+				logging.debug(f"JSON parsing error: {json_err}")
 				response = {'plan': {}, 'status': 200, 'error': "Failed to parse lesson content as JSON.", 'timestamp': int(time.time())}
 			
 			# Save the lesson plan to a JSON file
@@ -185,7 +187,7 @@ def get_lesson_content(openai_client, lesson_request, lesson_content_test_mode=F
 			return response
 
 		except Exception as e:
-			print('Error in get_lesson_content function')
+			logging.debug('Error in get_lesson_content function')
 			traceback.print_exc()  # printing stack trace
 			response = {'plan': None,
 						'status': 400,

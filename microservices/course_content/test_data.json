@@ -1,0 +1,53 @@
+{
+    "Course Plan": [
+        {
+            "SectionNumber": 1,
+            "SectionName": "Introduction to Neural Networks",
+            "SectionTopics": "Basics of Neural Networks, History and Evolution",
+            "SectionObjective": "Understand the fundamentals of neural networks",
+            "SectionTime": "2 hours"
+        },
+        {
+            "SectionNumber": 2,
+            "SectionName": "Neural Networks in Robotics",
+            "SectionTopics": "Application in Robotics, Case Studies",
+            "SectionObjective": "Learn about the application of neural networks in robotics",
+            "SectionTime": "3 hours"
+        },
+        {
+            "SectionNumber": 3,
+            "SectionName": "Deep Learning for Robotics",
+            "SectionTopics": "Deep Learning Basics, Tools and Frameworks",
+            "SectionObjective": "Introduction to deep learning in the context of robotics",
+            "SectionTime": "2.5 hours"
+        },
+        {
+            "SectionNumber": 4,
+            "SectionName": "Implementing Neural Networks",
+            "SectionTopics": "Python and TensorFlow, Building a Simple Model",
+            "SectionObjective": "Hands-on experience in implementing a neural network",
+            "SectionTime": "4 hours"
+        },
+        {
+            "SectionNumber": 5,
+            "SectionName": "Advanced Topics and Future Trends",
+            "SectionTopics": "Current Research, Future Trends",
+            "SectionObjective": "Explore advanced topics and the future of neural networks in robotics",
+            "SectionTime": "3 hours"
+        }
+    ],
+    "Course_Inputs": {
+        "topic": "Neural Networks for Robotics",
+        "duration": "15 hours",
+        "teachingStyle": "Interactive with hands-on projects",
+        "focusOn": "Practical implementation",
+        "purposeFor": "Educational",
+        "previousKnowledge": "Basic programming and robotics",
+        "otherConsiderations": "Access to computational resources for deep learning"
+    },
+	"Progress_Status": {
+        "section": 0,
+        "chapter": 0,
+        "lesson": 0
+    }
+}

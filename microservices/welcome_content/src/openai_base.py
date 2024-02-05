@@ -16,7 +16,7 @@ def get_openai_client():
 
 
 
-def ask_llm(openai_client, instructions: str, query: str, model_engine="gpt-3.5-turbo", response_format={"type": "json_object"}, max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
+def ask_llm(openai_client, instructions: str, query: str, model_engine="gpt-3.5-turbo-1106", response_format={"type": "json_object"}, max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
 	messages = []
 	msg_content = None
 	if not use_assistants:
@@ -73,6 +73,7 @@ def ask_llm(openai_client, instructions: str, query: str, model_engine="gpt-3.5-
 				response = openai_client.chat.completions.create(
 					model=model_engine,
 					n=1,
+					response_format=response_format,
 					max_tokens=max_tokens,
 					temperature=temperature,
 					messages=messages)

@@ -12,7 +12,7 @@ import tiktoken # type: ignore
 from typing_extensions import NotRequired, Required, TypedDict
 import logging
 
-model_name="gpt-3.5-turbo"
+model_name="gpt-3.5-turbo-1106"
 encoding = tiktoken.encoding_for_model(model_name)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 logging.basicConfig(level=logging.DEBUG)
@@ -39,6 +39,7 @@ class CourseOptions(TypedDict):
 	
 @functions_framework.http
 def http_course_plan(request):
+	course_plan_test_mode = False
 	run_job = False
 	if request.method == 'OPTIONS':
 		headers = {
@@ -65,7 +66,7 @@ def http_course_plan(request):
 
 		if run_job:
 			print("Course plan query for user @ {}".format(time.time()))
-			res = main_course_plan(course_options)
+			res = main_course_plan(course_options, course_plan_test_mode)
 			return (res, 200, headers)
 		res = {'plan': None,
 			'options': None,
@@ -82,23 +83,8 @@ def http_course_plan(request):
 		#logging.error(f"An error occurred: {e}")
 		return (f"An error occurred: {str(e)}", 500, headers)
 	
-def substring_between_patterns(text, pattern1, pattern2):
-	# ensure start and end patterns don't have round brackets
-	pattern = pattern1 + '([\s\S]*?)' + pattern2
-	expression = regex.compile(pattern)
-	substring = regex.search(expression, text)
-	return (substring.group(1) if bool(substring) else '')
-	
-def json_from_response(response):
-	options: CourseOptions = {
-		'topic': substring_between_patterns(response, '<topic>', '</topic>'),
-		'duration': substring_between_patterns(response, '<duration>', '</duration>'),
-		'teachingStyle': substring_between_patterns(response, '<teaching-style>', '</teaching-style>')
-	}
-	plan = substring_between_patterns(response, '<content>', '</content>')
-	return plan, options
 
-def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo", max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
+def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo-1106", max_tokens=1024, temperature=0.2, response_format={"type": "json_object"}, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
 	messages = []
 	msg_content = None
 	if not use_assistants:
@@ -155,6 +141,7 @@ def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo", max_tok
 				response = openai_client.chat.completions.create(
 					model=model_engine,
 					n=1,
+					response_format=response_format,
 					max_tokens=max_tokens,
 					temperature=temperature,
 					messages=messages)
@@ -170,7 +157,13 @@ def ask_llm(instructions: str, query: str, model_engine="gpt-3.5-turbo", max_tok
 		raise Exception('Open AI Error')
 	return msg_content
 
-def main_course_plan(course_options: CourseOptions):
+def main_course_plan(course_options: CourseOptions, course_plan_test_mode):
+	if course_plan_test_mode:
+		# Read the lesson plan from the file in test mode
+		course_plan_file = os.path.join(current_dir, './course_plan_file.json')
+		with open(course_plan_file, 'r') as file:
+			response = json.load(file)
+		return response
 	try:
 		'''Load prompt instructions'''
 		instructions = 'You are an AI tutor.'
@@ -181,7 +174,9 @@ def main_course_plan(course_options: CourseOptions):
 		'''Construct prompt query'''
 		current_query = ''
 		if (len(course_options.get('topic', '')) > 0):
-			current_query += f"I want to learn about {course_options.get('topic', '')} in {course_options.get('duration', '')}."
+			current_query += f"I want to learn about {course_options.get('topic', '')}."
+		if course_options.get('durationInHours', 0) > 0:
+			current_query += f"in {course_options.get('durationInHours')} hours."
 		if (len(course_options.get('teachingStyle', '')) > 0):
 			current_query += f"I prefer a teaching style that is {course_options.get('teachingStyle', '')}."
 		if (len(course_options.get('focusOn', '')) > 0):
@@ -192,15 +187,17 @@ def main_course_plan(course_options: CourseOptions):
 			current_query += f"I want to learn this for {course_options.get('purposeFor', '')}."
 		if (len(course_options.get('otherConsiderations', '')) > 0):
 			current_query += f"Some other things that you can consider - {course_options.get('otherConsiderations', '')}."
-		current_query += "Please create a course plan for me."
-		plan_text = ask_llm(instructions, current_query)
-		plan, options = json_from_response(plan_text)
-		response = {'plan': plan,
-			'options': options,
+		current_query += "Please create a course plan for me in the JSON format."
+		plan_json = ask_llm(instructions, current_query)
+		response = {'response': plan_json,
 			'status': 200,
 			'error': None,
 			'timestamp': int(time.time())
 		}
+		course_plan_file = os.path.join(current_dir, './course_plan_file.json')
+		with open(course_plan_file, 'w') as file:
+			json.dump(response, file, indent=4)
+
 	except Exception as e:
 		print('Google cloud function error')
 		traceback.print_exc() # printing stack trace

@@ -12,13 +12,13 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 class SectionDetails(TypedDict):
-	SectionNumber: Required[str]
-	SectionName: Required[str]
-	SectionTopics: Required[str]
-	SectionObjective: Required[str]
-	SectionTime: Required[str]
+	sectionNumber: Required[str]
+	sectionName: Required[str]
+	sectionTopics: Required[str]
+	sectionObjective: Required[str]
+	sectionTime: Required[str]
 
-def get_welcome_content(openai_client, course_options, course_plan_str, welcome_content_test_mode):
+def get_welcome_content(openai_client, courseOptions, detailedCoursePlan, welcome_content_test_mode):
 	current_dir = os.path.dirname(os.path.abspath(__file__))
 
 	if welcome_content_test_mode:
@@ -38,20 +38,20 @@ def get_welcome_content(openai_client, course_options, course_plan_str, welcome_
 					instructions = f.read()
 
 			current_query = ''
-			if (len(course_options.get('topic', '')) > 0):
-				current_query += f"Learner wants to learn {course_options.get('topic', '')} in {course_options.get('duration', '')}."
-			if (len(course_options.get('teachingStyle', '')) > 0):
-				current_query += f"Learner prefers a teaching style that is {course_options.get('teachingStyle', '')}."
-			if (len(course_options.get('focusOn', '')) > 0):
-				current_query += f"Learner wants to focus more on {course_options.get('focusOn', '')}."
-			if (len(course_options.get('previousKnowledge', '')) > 0):
-				current_query += f"Learner already know about {course_options.get('previousKnowledge', '')}."
-			if (len(course_options.get('purposeFor', '')) > 0):
-				current_query += f"Learner wants to learn this for {course_options.get('purposeFor', '')}."
-			if (len(course_options.get('otherConsiderations', '')) > 0):
-				current_query += f"Some other things that you can consider are - {course_options.get('otherConsiderations', '')}."
-			if (len(course_plan_str) > 0):
-				current_query += f"The course plan that the learner agreed on is - {course_plan_str}."
+			if (len(courseOptions.get('topic', '')) > 0):
+				current_query += f"Learner wants to learn {courseOptions.get('topic', '')} in {courseOptions.get('durationInHours', '')} hours."
+			if (len(courseOptions.get('teachingStyle', '')) > 0):
+				current_query += f"Learner prefers a teaching style that is {courseOptions.get('teachingStyle', '')}."
+			if (len(courseOptions.get('focusOn', '')) > 0):
+				current_query += f"Learner wants to focus more on {courseOptions.get('focusOn', '')}."
+			if (len(courseOptions.get('previousKnowledge', '')) > 0):
+				current_query += f"Learner already know about {courseOptions.get('previousKnowledge', '')}."
+			if (len(courseOptions.get('purposeFor', '')) > 0):
+				current_query += f"Learner wants to learn this for {courseOptions.get('purposeFor', '')}."
+			if (len(courseOptions.get('otherConsiderations', '')) > 0):
+				current_query += f"Some other things that you can consider are - {courseOptions.get('otherConsiderations', '')}."
+			if (len(detailedCoursePlan) > 0):
+				current_query += f"The course plan that the learner agreed on is - {detailedCoursePlan}."
 			current_query += "You now need to welcome the learner with a welcome message, welcoming the learner to this course. Give a little fun fact about what the learner is trying to learn, little reaffirmation the importance of what learner is learning and give a little detail about the course plan and how you will teach the user with the course plan. Then at the end, have a sentence to connect to the first section after this welcome message. Have this entire messae within 500 words. The narrative should be exciting. Underline, bold, number and bullet points the content wherever it is applicable for easy reading. Have the content in JSON format such as {{\"content\": \"<welcome_content>\"}}"
 
 			welcome_content = ask_llm(openai_client, instructions, current_query)
@@ -107,13 +107,13 @@ def get_lesson_plan(openai_client, section_details: SectionDetails, lesson_data_
 
 			'''Construct prompt query based on SectionDetails'''
 			current_query = (
-				f"Create a chapter and lesson plan for a section titled '{section_details['SectionName']}' "
-				f"covering the topics '{section_details['SectionTopics']}'. "
-				f"The objective of this section is to '{section_details['SectionObjective']}'. "
-				f"The total time allocated for this section is {section_details['SectionTime']}. "
+				f"Create a chapter and lesson plan for a section titled '{section_details['sectionName']}' "
+				f"covering the topics '{section_details['sectionTopics']}'. "
+				f"The objective of this section is to '{section_details['sectionObjective']}'. "
+				f"The total time allocated for this section is {section_details['sectionTime']}. "
 				f"Organize the content into multiple chapters and within each chapter include multiple lessons. "
 				f"Format the output as JSON. For example: "
-				f"{{\"Chapters\": [{{\"ChapterTitle\": \"Example Chapter 1\", \"Lessons\": [{{\"LessonTitle\": \"Lesson 1\", \"Content\": \"...\"}}, {{\"LessonTitle\": \"Lesson 2\", \"Content\": \"...\"}}]}}]}}"
+				f"{{\"chapters\": [{{\"chapterTitle\": \"Example Chapter 1\", \"lessons\": [{{\"lessonTitle\": \"<Lesson Title>\", \"content\": \"...\"}}, {{\"lessonTitle\": \"<Lesson Title>\", \"content\": \"...\"}}]}}]}}"
 				)
 
 
@@ -146,7 +146,7 @@ def get_lesson_content(openai_client, lesson_request, lesson_content_test_mode=F
 
 	if lesson_content_test_mode:
 		# Read the lesson plan from the file in test mode
-		lesson_plan_file = os.path.join(current_dir, '../lesson_content.json')
+		lesson_plan_file = os.path.join(current_dir, '../content.json')
 		with open(lesson_plan_file, 'r') as file:
 			response = json.load(file)
 		return response
@@ -160,28 +160,31 @@ def get_lesson_content(openai_client, lesson_request, lesson_content_test_mode=F
 					instructions = f.read()
 			'''Construct prompt query based on SectionDetails'''
 			current_query = (
-				f"Create a 700 words content for the lesson titled '{lesson_request['lesson_title']}' "
-				f"which is within the chapter of '{lesson_request['chapter_title']}'. "
-				f". The objective of this content is '{lesson_request['lesson_content']}'. "
+				f"Create a 700 words content for the lesson titled '{lesson_request['lessonTitle']}' "
+				f"which is within the chapter of '{lesson_request['chapterTitle']}'. "
+				f". The objective of this content is '{lesson_request['content']}'. "
 				f"Format the output as JSON. For example: "
 				f"{{\"content\": \"<lesson_content>\"}}"
 				)
 
 
-			lesson_content = ask_llm(openai_client, instructions, current_query)
-			logging.debug(f"lesson_content in llm request: {lesson_content}")
+			content = ask_llm(openai_client, instructions, current_query)
+			logging.debug(f"content in llm request: {content}")
 
-			escaped_content = lesson_content.replace('\n', '\\n')
+			#escaped_content = content.replace('\n', '\\n')
+			#logging.debug(f"escaped content: {escaped_content}")
 
 			try:
-				parsed_content = json.loads(escaped_content)
+				parsed_content = json.loads(content)
+				logging.debug(f"parsed_content: {parsed_content}")
+
 				response = {'plan': parsed_content, 'status': 200, 'error': None, 'timestamp': int(time.time())}
 			except json.JSONDecodeError as json_err:
 				logging.debug(f"JSON parsing error: {json_err}")
 				response = {'plan': {}, 'status': 200, 'error': "Failed to parse lesson content as JSON.", 'timestamp': int(time.time())}
 			
 			# Save the lesson plan to a JSON file
-			lesson_content_file = os.path.join(current_dir, '../lesson_content.json')
+			lesson_content_file = os.path.join(current_dir, '../content.json')
 			with open(lesson_content_file, 'w') as file:
 				json.dump(response, file, indent=4)
 			return response

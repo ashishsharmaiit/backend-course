@@ -13,10 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 @functions_framework.http
-def process_welcome_data(request):
+def process_lesson_data(request):
 
 	welcome_content_test_mode = True
-	lesson_content_test_mode = False
+	lesson_content_test_mode = True
 
 	courses_collection = get_db_connection()
 	openai_client = get_openai_client()
@@ -34,50 +34,58 @@ def process_welcome_data(request):
 
 	try:
 		if request.headers['Content-Type'] == 'application/json':
-			course_data = request.get_json()
+			courseData = request.get_json()
 		else:
 			return ('Content-Type not supported!', 415, headers)
+		
+		logging.debug(f"Received input: {courseData}")
 
-		progress_status = course_data.get("Progress_Status", 0)
-		course_id = course_data.get("course_id", "")
-		course_inputs = course_data.get("course_options", {})
+		progressStatus = courseData.get("progressStatus", 0)
+		courseId = courseData.get("courseId", "")
+		courseOptions = courseData.get("courseOptions", {})
 
-		course_plan = course_data.get("course_plan", {})
-		logging.debug(f"Received course data: {course_plan}")
+		detailedCoursePlan = courseData.get("detailedCoursePlan", {})
 
 		# Initialize an empty list to hold formatted section descriptions
 		formatted_sections = []
 
-		for section in course_plan:
+		for section in detailedCoursePlan:
 			# Format each section's details into a readable string
-			section_str = f"Section {section.get('SectionNumber')}: {section.get('SectionName')}, Topics: {section.get('SectionTopics')}, Objective: {section.get('SectionObjective')}, Duration: {section.get('SectionTime')}."
+			section_str = f"Section {section.get('sectionNumber')}: {section.get('sectionName')}, Topics: {section.get('sectionTopics')}, Objective: {section.get('sectionObjective')}, Duration: {section.get('sectionTime')}."
 			formatted_sections.append(section_str)
 
 		# Join all section descriptions into a single string with line breaks or any other separator you prefer
-		course_plan_str = " ".join(formatted_sections)
+		detailedCoursePlan_str = " ".join(formatted_sections)
+		
+		logging.debug(f"detailedCoursePlan_str: {detailedCoursePlan_str}")
 
 
 		inserted_id = None
 
-		if progress_status == 0 and not course_id:
-			insertion_result = courses_collection.insert_one(course_data)
+		if progressStatus == 0 and not courseId:
+			insertion_result = courses_collection.insert_one(courseData)
 			inserted_id = insertion_result.inserted_id
-			
-			welcome_content = get_welcome_content(openai_client, course_inputs, course_plan_str, welcome_content_test_mode)
+			logging.debug(f"inserted_id: {inserted_id}")
+	
+			welcome_content = get_welcome_content(openai_client, courseOptions, detailedCoursePlan_str, welcome_content_test_mode)
+			logging.debug(f"welcome_content: {welcome_content}")
+
 
 			response = {
-				"course_id": str(inserted_id),
-				"course_content": welcome_content
+				"courseId": str(inserted_id),
+				"courseContent": welcome_content
 			}
+			logging.debug(f"response: {response}")
 
 			return (json.dumps(response), 200, headers)
 
 
-		if course_id:
-			find_unique_lesson_num = progress_status + 1
+		if courseId:
+			find_unique_lesson_num = progressStatus + 1
 
-			
-			exists, sec_index, chapter_num, lesson_num = check_lesson_exists(course_plan, find_unique_lesson_num)
+			logging.debug("courseId", courseId, "progressStatus", progressStatus)
+
+			exists, sec_index, chapter_num, lesson_num = check_lesson_exists(detailedCoursePlan, find_unique_lesson_num)
 			logging.debug(f"Values: {exists}, {sec_index},{chapter_num},{lesson_num},")
 			
 			
@@ -85,14 +93,14 @@ def process_welcome_data(request):
 
 			
 			if not exists:
-				course_plan = generate_and_update_lesson_plan(openai_client, course_plan, section_num)
-				logging.debug(f"New Course Plan: {course_plan}")
-				exists, sec_index, chapter_num, lesson_num = check_lesson_exists(course_plan, find_unique_lesson_num)
+				detailedCoursePlan = generate_and_update_lesson_plan(openai_client, detailedCoursePlan, section_num)
+				logging.debug(f"New Course Plan: {detailedCoursePlan}")
+				exists, sec_index, chapter_num, lesson_num = check_lesson_exists(detailedCoursePlan, find_unique_lesson_num)
 				logging.debug(f"Values: {exists}, {sec_index},{chapter_num},{lesson_num},")
 				section_num = sec_index + 1
 
 			
-			lesson_request = extract_lesson_data(course_plan, sec_index, chapter_num, lesson_num)
+			lesson_request = extract_lesson_data(detailedCoursePlan, sec_index, chapter_num, lesson_num)
 			logging.debug(f"lesson_request: {lesson_request}")
 
 			
@@ -101,18 +109,25 @@ def process_welcome_data(request):
 
 			
 			detailed_content = lesson_content.get('plan', {})
+			logging.debug(f"detailed_content: {detailed_content}")
+
 			lesson_content_text = detailed_content.get('content', '')
-			section = course_plan[sec_index]
+			logging.debug(f"lesson_content_text: {lesson_content_text}")
+
+			section = detailedCoursePlan[sec_index]
+			logging.debug(f"section: {section}")
 
 			
-			section_heading = f"Section {section_num}: {section.get('SectionName', '')}"
+			section_heading = f"Section {section_num}: {section.get('sectionName', '')}"
+			logging.debug(f"section_heading: {section_heading}")
 
-			chapter_heading = lesson_request['chapter_title']
+			chapter_heading = lesson_request['chapterTitle']
 			
+			logging.debug(f"chapter_heading: {chapter_heading}")
 
 			response = {
-							"course_plan": course_plan,
-							"course_content": 
+							"detailedCoursePlan": detailedCoursePlan,
+							"courseContent": 
 							{find_unique_lesson_num: 
 								{"h1": section_heading, "h2": chapter_heading, "content": lesson_content_text			
 								}

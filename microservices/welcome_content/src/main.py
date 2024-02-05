@@ -7,6 +7,7 @@ import logging
 import os
 from db_code import get_db_connection
 
+##comment to test
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 

@@ -7,9 +7,9 @@ import logging
 import os
 from db_code import get_db_connection
 
-logging.basicConfig(filename='app_logs.log', level=logging.DEBUG, 
-                    format='%(asctime)s %(levelname)s %(name)s %(message)s')
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
 
 @functions_framework.http
 def process_welcome_data(request):

@@ -11,12 +11,14 @@ from db_code import get_db_connection
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
+	config = json.load(infile)
+
 
 @functions_framework.http
 def process_lesson_data(request):
 
-	welcome_content_test_mode = True
-	lesson_content_test_mode = True
 
 	courses_collection = get_db_connection()
 	openai_client = get_openai_client()
@@ -67,7 +69,7 @@ def process_lesson_data(request):
 			inserted_id = insertion_result.inserted_id
 			logging.debug(f"inserted_id: {inserted_id}")
 	
-			welcome_content = get_welcome_content(openai_client, courseOptions, detailedCoursePlan_str, welcome_content_test_mode)
+			welcome_content = get_welcome_content(openai_client, courseOptions, detailedCoursePlan_str, config['welcome_content_test_mode'])
 			logging.debug(f"welcome_content: {welcome_content}")
 
 
@@ -104,7 +106,7 @@ def process_lesson_data(request):
 			logging.debug(f"lesson_request: {lesson_request}")
 
 			
-			lesson_content = get_lesson_content(openai_client, lesson_request, lesson_content_test_mode)
+			lesson_content = get_lesson_content(openai_client, lesson_request, config['lesson_content_test_mode'])
 			logging.debug(f"lesson_content: {lesson_content}")
 
 			

@@ -1,5 +1,10 @@
 import json
 from llm_prompts import get_lesson_plan
+import os
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
+	config = json.load(infile)
 
 def load_section_details(detailedCoursePlan, sectionNumber: int):
 	for index, section in enumerate(detailedCoursePlan):
@@ -71,9 +76,9 @@ def generate_and_update_lesson_plan(openai_client, detailedCoursePlan, section_n
 
 	insert_unique_lesson_num = 1
 	section_details = detailedCoursePlan[section_index]
-	lesson_data_test_mode = True
+	
 	# Generate lesson plan (simplified example; replace with your actual implementation)
-	lesson_plan_response = get_lesson_plan(openai_client, section_details, lesson_data_test_mode)
+	lesson_plan_response = get_lesson_plan(openai_client, section_details, (config['lesson_data_test_mode']))
 	lesson_plan_json = json.loads(lesson_plan_response.get('plan', '{}'))
 
 	for chapter in lesson_plan_json.get('chapters', []):

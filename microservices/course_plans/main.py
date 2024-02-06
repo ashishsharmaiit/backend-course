@@ -39,7 +39,7 @@ class CourseOptions(TypedDict):
 	
 @functions_framework.http
 def http_course_plan(request):
-	course_plan_test_mode = False
+	course_plan_test_mode = True
 	run_job = False
 	if request.method == 'OPTIONS':
 		headers = {

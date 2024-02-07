@@ -19,9 +19,9 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-with open(os.path.join(current_dir, 'openai_key.json'), 'r') as infile:
-	key_document = json.load(infile)
-	os.environ['OPENAI_API_KEY'] = key_document['openai_key_primary']
+with open(os.path.join(current_dir, 'config.json'), 'r') as infile:
+	config = json.load(infile)
+	os.environ['OPENAI_API_KEY'] = config['openai_key_primary']
 	
 openai_client = OpenAI(
   organization="org-9ckxNJxqNOipkJbzJDpgoyA6",
@@ -39,7 +39,7 @@ class CourseOptions(TypedDict):
 	
 @functions_framework.http
 def http_course_plan(request):
-	course_plan_test_mode = True
+	course_plan_test_mode = config['course_plan_test_mode']
 	run_job = False
 	if request.method == 'OPTIONS':
 		headers = {
@@ -164,6 +164,7 @@ def main_course_plan(course_options: CourseOptions, course_plan_test_mode):
 		with open(course_plan_file, 'r') as file:
 			response = json.load(file)
 		return response
+	
 	try:
 		'''Load prompt instructions'''
 		instructions = 'You are an AI tutor.'

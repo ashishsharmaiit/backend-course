@@ -1,16 +1,20 @@
 import json
 from llm_prompts import get_lesson_plan
 import os
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
 	config = json.load(infile)
 
 def load_section_details(detailedCoursePlan, sectionNumber: int):
-	for index, section in enumerate(detailedCoursePlan):
-		if section["sectionNumber"] == sectionNumber:
-			return section, index
-	return None, -1  # Return None and -1 if the section is not found
+    for index, section in enumerate(detailedCoursePlan):
+        if section["sectionNumber"] == str(sectionNumber):  # Convert sectionNumber to string for comparison
+            return section, index
+    return None, -1  # Return None and -1 if the section is not found
 
 def extract_lesson_data(detailedCoursePlan, sec_index, chapter_num, lesson_num):
 	try:
@@ -69,18 +73,15 @@ def check_lesson_exists(detailedCoursePlan, uniqueLessonId):
 def generate_and_update_lesson_plan(openai_client, detailedCoursePlan, section_num):
 	# Assuming `section_num` is based on 1-indexing as per your example
 	# Adjust if your indexing scheme is different
-	lesson_data_test_mode = True
+	lesson_data_test_mode = config['lesson_data_test_mode']
 	section_details, section_index = load_section_details(detailedCoursePlan, section_num)
+	logging.debug(f"section detail: {section_details}, section_index: {section_index}")
 	lesson_plan_response = get_lesson_plan(openai_client, section_details, lesson_data_test_mode)
 	lesson_plan_json = json.loads(lesson_plan_response.get('plan', '{}'))
 
 	insert_unique_lesson_num = 1
 	section_details = detailedCoursePlan[section_index]
 	
-	# Generate lesson plan (simplified example; replace with your actual implementation)
-	lesson_plan_response = get_lesson_plan(openai_client, section_details, (config['lesson_data_test_mode']))
-	lesson_plan_json = json.loads(lesson_plan_response.get('plan', '{}'))
-
 	for chapter in lesson_plan_json.get('chapters', []):
 		# Iterate through lessons in the chapter
 		for lesson in chapter.get('lessons', []):

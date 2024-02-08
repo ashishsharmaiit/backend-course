@@ -3,9 +3,7 @@
     "mongo_pass": "SocratiQ123@",
     "mongo_cluster_url": "cluster0.2ajha3q.mongodb.net",
     "openai_key_primary": "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",
-    "welcome_content_test_mode": false,
-    "lesson_content_test_mode": false,
-    "lesson_data_test_mode": false
+    "welcome_content_test_mode": false
 }
   
 

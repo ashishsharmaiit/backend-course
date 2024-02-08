@@ -1,0 +1,39 @@
+{
+    "courseContent": {
+        "0": {
+            "h1": "Welcome!",
+            "h2": "",
+            "content": "\ud83c\udf1f Welcome to LearnwithAI! \ud83c\udf1f\n\nArtificial Intelligence is an incredibly exciting and rapidly evolving field that has the potential to revolutionize the way we live and work. I'm here to guide you through the fascinating world of AI, from the basics to advanced concepts. With my knowledge base and ability to customize content, I'll make sure you have a personalized learning experience. Here's a suggested course plan to get you started:\n\n\ud83e\udd16 Section 1: Introduction to AI\n\ud83d\udcda Topics: What is AI, History of AI, Types of AI\n\ud83c\udfaf Objective: Understand the fundamentals of AI\n\u23f1\ufe0f Time: 2 hours\n\n\ud83d\udd0d Section 2: Machine Learning\n\ud83d\udcda Topics: Supervised Learning, Unsupervised Learning, Reinforcement Learning\n\ud83c\udfaf Objective: Learn about the core concepts of machine learning\n\u23f1\ufe0f Time: 3 hours\n\n\ud83d\udca1 Section 3: Deep Learning\n\ud83d\udcda Topics: Neural Networks, Convolutional Neural Networks, Recurrent Neural Networks\n\ud83c\udfaf Objective: Explore the principles of deep learning\n\u23f1\ufe0f Time: 3 hours\n\n\ud83e\udd2f Section 4: AI Applications\n\ud83d\udcda Topics: Natural Language Processing, Computer Vision, Robotics\n\ud83c\udfaf Objective: Discover real-world applications of AI\n\u23f1\ufe0f Time: 2 hours\n\nFeel free to customize this course plan based on your prior knowledge, focus areas, or specific applications you have in mind. Let me know if you'd like to make any changes or if you have any questions! \ud83d\ude80"
+        }
+    },
+    "detailedCoursePlan": [
+        {
+            "sectionNumber": "1",
+            "sectionName": "Introduction to AI",
+            "sectionTopics": "What is AI, History of AI, Types of AI",
+            "sectionObjective": "Understand the fundamentals of AI",
+            "sectionTime": "2"
+        },
+        {
+            "sectionNumber": "2",
+            "sectionName": "Machine Learning",
+            "sectionTopics": "Supervised Learning, Unsupervised Learning, Reinforcement Learning",
+            "sectionObjective": "Learn about the core concepts of machine learning",
+            "sectionTime": "3"
+        },
+        {
+            "sectionNumber": "3",
+            "sectionName": "Deep Learning",
+            "sectionTopics": "Neural Networks, Convolutional Neural Networks, Recurrent Neural Networks",
+            "sectionObjective": "Explore the principles of deep learning",
+            "sectionTime": "3"
+        },
+        {
+            "sectionNumber": "4",
+            "sectionName": "AI Applications",
+            "sectionTopics": "Natural Language Processing, Computer Vision, Robotics",
+            "sectionObjective": "Discover real-world applications of AI",
+            "sectionTime": "2"
+        }
+    ]
+}

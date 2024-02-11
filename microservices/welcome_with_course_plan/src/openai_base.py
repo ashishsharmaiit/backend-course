@@ -5,18 +5,20 @@ import time
 import random
 
 
-def get_openai_client():
-	current_dir = os.path.dirname(os.path.abspath(__file__))
-	with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
-		config = json.load(infile)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
+	config = json.load(infile)
 
+openai_model = config['openai_model']
+
+def get_openai_client():
 	os.environ['OPENAI_API_KEY'] = config['openai_key_primary']
 	return openai.OpenAI(organization="org-9ckxNJxqNOipkJbzJDpgoyA6", 
 						 api_key=os.environ['OPENAI_API_KEY'])
 
 
 
-def ask_llm(openai_client, instructions: str, query: str, model_engine="gpt-3.5-turbo-1106", response_format={"type": "json_object"}, max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
+def ask_llm(openai_client, instructions: str, query: str, model_engine=openai_model, response_format={"type": "json_object"}, max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
 	messages = []
 	msg_content = None
 	if not use_assistants:

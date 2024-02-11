@@ -30,7 +30,7 @@ def welcome_with_plan(request):
 
 	headers = {'Access-Control-Allow-Origin': '*'}
 	welcome_content_test_mode = config['welcome_content_test_mode']
-	logging.debug(f"extracted topic: {welcome_content_test_mode}")
+	logging.debug(f"welcome_content_test_mode: {welcome_content_test_mode}")
 
 	try:
 		if request.headers['Content-Type'] == 'application/json':

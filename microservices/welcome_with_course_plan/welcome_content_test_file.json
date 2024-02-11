@@ -1,39 +1,46 @@
 {
     "courseContent": {
-        "0": {
+        "-1.-1": {
             "h1": "Welcome!",
             "h2": "",
-            "content": "\ud83c\udf1f Welcome to LearnwithAI! \ud83c\udf1f\n\nArtificial Intelligence is an incredibly exciting and rapidly evolving field that has the potential to revolutionize the way we live and work. I'm here to guide you through the fascinating world of AI, from the basics to advanced concepts. With my knowledge base and ability to customize content, I'll make sure you have a personalized learning experience. Here's a suggested course plan to get you started:\n\n\ud83e\udd16 Section 1: Introduction to AI\n\ud83d\udcda Topics: What is AI, History of AI, Types of AI\n\ud83c\udfaf Objective: Understand the fundamentals of AI\n\u23f1\ufe0f Time: 2 hours\n\n\ud83d\udd0d Section 2: Machine Learning\n\ud83d\udcda Topics: Supervised Learning, Unsupervised Learning, Reinforcement Learning\n\ud83c\udfaf Objective: Learn about the core concepts of machine learning\n\u23f1\ufe0f Time: 3 hours\n\n\ud83d\udca1 Section 3: Deep Learning\n\ud83d\udcda Topics: Neural Networks, Convolutional Neural Networks, Recurrent Neural Networks\n\ud83c\udfaf Objective: Explore the principles of deep learning\n\u23f1\ufe0f Time: 3 hours\n\n\ud83e\udd2f Section 4: AI Applications\n\ud83d\udcda Topics: Natural Language Processing, Computer Vision, Robotics\n\ud83c\udfaf Objective: Discover real-world applications of AI\n\u23f1\ufe0f Time: 2 hours\n\nFeel free to customize this course plan based on your prior knowledge, focus areas, or specific applications you have in mind. Let me know if you'd like to make any changes or if you have any questions! \ud83d\ude80"
+            "content": "Welcome to LearnwithAI! \ud83e\udd16\n\nLearning about CI/CD pipelines is super exciting! \ud83d\ude80 It's a crucial aspect of modern software development that can streamline your workflow and improve efficiency. I'm here to guide you through this journey, customize the content as per your needs, and clarify any doubts you may have along the way. Let's dive in!\n\nHere's a suggested course plan for you:\n\n1. Introduction to CI/CD\n- Topics: What is CI/CD, Benefits of CI/CD, CI vs CD\n- Objective: Understand the concept of CI/CD and its importance in software development\n- Time: 1.5 hours\n\n2. CI Tools and Practices\n- Topics: Popular CI tools, Setting up CI pipelines, Best practices\n- Objective: Learn about various CI tools, how to set up CI pipelines, and best practices to follow\n- Time: 2 hours\n\n3. CD Strategies\n- Topics: Deployment strategies, Blue-Green deployment, Canary deployment\n- Objective: Explore different CD strategies and deployment techniques\n- Time: 1.5 hours\n\n4. Infrastructure as Code\n- Topics: Introduction to IaC, Tools like Terraform, Ansible\n- Objective: Understand the concept of Infrastructure as Code and its role in CI/CD\n- Time: 2 hours\n\n5. Monitoring and Feedback Loops\n- Topics: Importance of monitoring, Feedback mechanisms in CI/CD\n- Objective: Learn about the significance of monitoring and feedback loops in CI/CD processes\n- Time: 1 hour\n\nFeel free to customize this course plan based on your existing knowledge, specific learning goals, or any applications you have in mind for CI/CD pipelines. Let me know how you'd like to tailor this course to suit your needs! \ud83c\udf93"
         }
     },
     "detailedCoursePlan": [
         {
-            "sectionNumber": "1",
-            "sectionName": "Introduction to AI",
-            "sectionTopics": "What is AI, History of AI, Types of AI",
-            "sectionObjective": "Understand the fundamentals of AI",
+            "sectionName": "Introduction to CI/CD",
+            "sectionTopics": "What is CI/CD, Benefits of CI/CD, CI vs CD",
+            "sectionObjective": "Understand the concept of CI/CD and its importance in software development",
+            "sectionDetails": "This section will provide an overview of CI/CD, discussing its benefits and the differences between Continuous Integration and Continuous Deployment.",
+            "sectionTime": "1.5"
+        },
+        {
+            "sectionName": "CI Tools and Practices",
+            "sectionTopics": "Popular CI tools, Setting up CI pipelines, Best practices",
+            "sectionObjective": "Learn about various CI tools, how to set up CI pipelines, and best practices to follow",
+            "sectionDetails": "In this section, you will explore different CI tools, understand the process of setting up CI pipelines, and learn about the best practices for efficient CI implementation.",
             "sectionTime": "2"
         },
         {
-            "sectionNumber": "2",
-            "sectionName": "Machine Learning",
-            "sectionTopics": "Supervised Learning, Unsupervised Learning, Reinforcement Learning",
-            "sectionObjective": "Learn about the core concepts of machine learning",
-            "sectionTime": "3"
+            "sectionName": "CD Strategies",
+            "sectionTopics": "Deployment strategies, Blue-Green deployment, Canary deployment",
+            "sectionObjective": "Explore different CD strategies and deployment techniques",
+            "sectionDetails": "This section will delve into various CD strategies such as Blue-Green deployment and Canary deployment, providing insights into choosing the right deployment technique.",
+            "sectionTime": "1.5"
         },
         {
-            "sectionNumber": "3",
-            "sectionName": "Deep Learning",
-            "sectionTopics": "Neural Networks, Convolutional Neural Networks, Recurrent Neural Networks",
-            "sectionObjective": "Explore the principles of deep learning",
-            "sectionTime": "3"
-        },
-        {
-            "sectionNumber": "4",
-            "sectionName": "AI Applications",
-            "sectionTopics": "Natural Language Processing, Computer Vision, Robotics",
-            "sectionObjective": "Discover real-world applications of AI",
+            "sectionName": "Infrastructure as Code",
+            "sectionTopics": "Introduction to IaC, Tools like Terraform, Ansible",
+            "sectionObjective": "Understand the concept of Infrastructure as Code and its role in CI/CD",
+            "sectionDetails": "Here, you will learn about Infrastructure as Code (IaC), explore tools like Terraform and Ansible, and understand how IaC complements CI/CD pipelines.",
             "sectionTime": "2"
+        },
+        {
+            "sectionName": "Monitoring and Feedback Loops",
+            "sectionTopics": "Importance of monitoring, Feedback mechanisms in CI/CD",
+            "sectionObjective": "Learn about the significance of monitoring and feedback loops in CI/CD processes",
+            "sectionDetails": "This section will emphasize the importance of monitoring in CI/CD pipelines, and how feedback loops help in continuous improvement of the development process.",
+            "sectionTime": "1"
         }
     ]
 }

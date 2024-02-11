@@ -43,7 +43,7 @@ def get_welcome_content(openai_client, topic, welcome_content_test_mode):
 			current_query = ''
 			current_query += f"Learner wants to learn about {topic}. Give the welcome message and course content in JSON format."
 
-			welcome_content = ask_llm(openai_client, instructions, current_query)
+			welcome_content = ask_llm(openai_client, instructions, current_query, max_tokens=3000, temperature = 0.4)
 			logging.debug(f"welcome_content: {welcome_content}")
 			
 			welcome_content_dict = json.loads(welcome_content)
@@ -51,7 +51,7 @@ def get_welcome_content(openai_client, topic, welcome_content_test_mode):
 			response_pre = f"{welcome_content_dict['content']}"
 			detailed_course_plan = welcome_content_dict['detailedCoursePlan']
 
-			response = {"courseContent": {0: {"h1": "Welcome!", "h2": "", "content": response_pre}},
+			response = {"courseContent": {"-1.-1": {"h1": "Welcome!", "h2": "", "content": response_pre}},
 				"detailedCoursePlan": detailed_course_plan}
 			logging.debug(f"response being sent from llm prompt: {response}")
 

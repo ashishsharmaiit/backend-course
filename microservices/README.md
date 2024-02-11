@@ -12,13 +12,11 @@ Test command,
 
 `gcloud functions deploy course_plan_generator --runtime=python311 --entry-point=http_course_plan --trigger-http --memory=256MB --timeout=540s`
 
-The functions is deployed at, 
+The functions is deployed at,
 
 https://us-central1-socratiq.cloudfunctions.net/course_plan_generator
 
 Change gcloud project,
-
-
 
 ## Deploy lamda functions
 
@@ -50,4 +48,4 @@ To create zip files use,
 
 - Update function,
 
-`aws lambda update-function-code --function-name my-function --zip-file fileb://updatedfunction.zip` 
+`aws lambda update-function-code --function-name my-function --zip-file fileb://updatedfunction.zip`

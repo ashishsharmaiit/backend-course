@@ -1,0 +1,42 @@
+[
+    {
+        "lessonName": "Introduction to AI",
+        "lessonTopics": "Introducing the concept of Artificial Intelligence (AI), its significance in the modern world, and a brief history highlighting its evolution."
+    },
+    {
+        "lessonName": "AI in the Digital Era",
+        "lessonTopics": "Exploring the role of AI in shaping the digital era, with a focus on its transformative impact across various industries."
+    },
+    {
+        "lessonName": "Why AI in E-commerce",
+        "lessonTopics": "Discussing the specific reasons AI has become a cornerstone in E-commerce, including personalization and operational efficiency."
+    },
+    {
+        "lessonName": "AI Technologies Overview",
+        "lessonTopics": "A brief overview of key AI technologies used in E-commerce, setting the stage for deeper exploration of transformers and LLMs in later sections."
+    },
+    {
+        "lessonName": "Examples of AI in E-commerce",
+        "lessonTopics": "Introducing real-world examples of AI applications in E-commerce, such as recommendation engines and customer service chatbots."
+    },
+    {
+        "lessonName": "Impact on Product Management",
+        "lessonTopics": "Discussing how AI technologies, particularly in E-commerce, are redefining the role and responsibilities of Product Managers."
+    },
+    {
+        "lessonName": "Understanding Customer Needs",
+        "lessonTopics": "Exploring how AI helps in understanding and predicting customer needs, leading to better product recommendations and customer engagement."
+    },
+    {
+        "lessonName": "AI-Driven Decision Making",
+        "lessonTopics": "Highlighting the importance of AI in data-driven decision making for Product Managers, with examples of analytics and market insights."
+    },
+    {
+        "lessonName": "Future of AI in E-commerce",
+        "lessonTopics": "Speculating on the future advancements in AI and their potential impact on E-commerce, preparing learners for continuous learning."
+    },
+    {
+        "lessonName": "Getting Started with AI",
+        "lessonTopics": "Providing guidance on the first steps Product Managers can take to leverage AI in their E-commerce strategies, including resources for further learning."
+    }
+]

@@ -1,6 +1,6 @@
 import functions_framework
 from openai_base import get_openai_client
-from llm_prompts import get_welcome_content
+from llm_prompts import asking_background, asking_purpose, asking_duration, giving_course_plan
 import json
 import logging
 import os
@@ -30,7 +30,9 @@ def welcome_with_plan(request):
 
 	headers = {'Access-Control-Allow-Origin': '*'}
 	welcome_content_test_mode = config['welcome_content_test_mode']
-	logging.debug(f"welcome_content_test_mode: {welcome_content_test_mode}")
+	asking_purpose_test_mode = config['asking_purpose_test_mode']
+	asking_duration_test_mode = config['asking_duration_test_mode']
+	giving_course_plan_test_mode =config['giving_course_plan_test_mode']
 
 	try:
 		if request.headers['Content-Type'] == 'application/json':
@@ -45,10 +47,32 @@ def welcome_with_plan(request):
 		
 		logging.debug(f"extracted topic: {topic}")
 
-		welcome_content_with_plan = get_welcome_content(openai_client, topic, welcome_content_test_mode)
-		logging.debug(f"welcome_content_with_plan: {welcome_content_with_plan}")
+		background = courseOptions.get("background", "")
 
-		return (json.dumps(welcome_content_with_plan), 200, headers)
+		logging.debug(f"extracted background: {background}")
+
+		purposeOfLearning = courseOptions.get("purposeOfLearning", "")
+		logging.debug(f"purposeOfLearning: {purposeOfLearning}")
+
+		durationInHours = courseOptions.get("durationInHours", "")
+		logging.debug(f"durationInHours: {durationInHours}")
+
+
+		if not background:
+			response = asking_background(openai_client, topic, welcome_content_test_mode)
+			logging.debug(f"asking_background response: {response}")
+		elif not purposeOfLearning:
+			response = asking_purpose(openai_client, topic, background, asking_purpose_test_mode)
+			logging.debug(f"asking_purpose: {response}")
+		elif not durationInHours:
+			response = asking_duration(openai_client, topic, background, purposeOfLearning, asking_duration_test_mode)
+			logging.debug(f"asking_duration: {response}")
+		else:
+			response = giving_course_plan(openai_client, topic, background, purposeOfLearning, durationInHours, giving_course_plan_test_mode)
+			logging.debug(f"giving_course_plan: {response}")
+
+
+		return (json.dumps(response), 200, headers)
 
 	except json.JSONDecodeError as json_err:
 		#logging.error(f"JSON Error: {json_err}")

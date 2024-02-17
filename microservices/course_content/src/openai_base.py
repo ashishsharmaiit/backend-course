@@ -17,7 +17,7 @@ def get_openai_client():
 
 
 
-def ask_llm(openai_client, instructions: str, query: str, model_engine=openai_model, response_format={"type": "json_object"}, max_tokens=1024, temperature=0.2, use_assistants=False, openai_assistant=None, thread_id=None) -> str:
+def ask_llm(openai_client, instructions: str, query: str, model_engine=openai_model, response_format={"type": "json_object"}, max_tokens=4000, temperature=0.5, use_assistants=False, openai_assistant=None, thread_id=None, presence_penalty=0.6, frequency_penalty=0.6) -> str:
 	messages = []
 	msg_content = None
 	if not use_assistants:
@@ -77,7 +77,9 @@ def ask_llm(openai_client, instructions: str, query: str, model_engine=openai_mo
 					response_format=response_format,
 					max_tokens=max_tokens,
 					temperature=temperature,
-					messages=messages)
+					messages=messages,
+					frequency_penalty=frequency_penalty,
+					presence_penalty=presence_penalty)
 				msg_content = response.choices[0].message.content
 				break
 			except openai.OpenAIError as e:

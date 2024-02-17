@@ -13,7 +13,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
 	config = json.load(infile)
 
-
+section_overview_test_mode = config['section_overview_test_mode']
 @functions_framework.http
 def process_lesson_data(request):
 
@@ -86,7 +86,7 @@ def process_lesson_data(request):
 		
 		if lessonId == -1:
 
-			section_overview_content = get_section_overview(openai_client, topic, detailedCoursePlan, sectionId)
+			section_overview_content = get_section_overview(openai_client, courseOptions, detailedCoursePlan, sectionId, section_overview_test_mode)
 			logging.debug(f"section_overview_content: {section_overview_content}")
 			try:
 				section_overview_content_dict = json.loads(section_overview_content)
@@ -99,7 +99,7 @@ def process_lesson_data(request):
 			response = {
 				"courseContent": 
 				{key: 
-					{"h1": section_heading, "h2": "Section Overview", "content": section_overview_dict}
+					{"h1": "", "h2": "", "content": section_overview_dict}
 				}
 			}
 			return (json.dumps(response), 200, headers)			

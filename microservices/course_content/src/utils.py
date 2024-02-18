@@ -1,5 +1,4 @@
 import json
-from llm_prompts import get_lesson_plan
 import os
 import logging
 
@@ -10,48 +9,31 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
 	config = json.load(infile)
 
-def load_section_details(detailedCoursePlan, sectionNumber: int):
-    for index, section in enumerate(detailedCoursePlan):
-        if section["sectionNumber"] == str(sectionNumber):  # Convert sectionNumber to string for comparison
-            return section, index
-    return None, -1  # Return None and -1 if the section is not found
+def getPreviousContent(courseContent, sectionId, lessonId):
+    # Helper function to find the highest lessonId in the previous section
+    def find_highest_lessonId_in_previous_section(courseContent, previous_sectionId):
+        lessonIds = [int(key.split('.')[1]) for key in courseContent.keys() if key.startswith(f"{previous_sectionId}.")]
+        return max(lessonIds) if lessonIds else -1  # Returns -1 if no lessons found
 
-
-'''
-def check_lesson_exists(detailedCoursePlan, uniqueLessonId):
-	highest_unique_lesson_num = -1  # Initialize to -1 to indicate none found
-	sec_index_of_highest = -1  # Initialize to -1 to indicate none found
-
-	for section_index, section in enumerate(detailedCoursePlan):
-		if "subsection" in section:
-			subsection = section["subsection"]
-			for chapter_index, chapter in enumerate(lesson_plan["chapters"]):
-				for lesson_index, lesson in enumerate(chapter["lessons"]):
-					current_lesson_num = lesson.get("uniqueLessonId", -1)
-					# Update highest_unique_lesson_num if a higher value is found
-					if current_lesson_num > highest_unique_lesson_num:
-						highest_unique_lesson_num = current_lesson_num
-						sec_index_of_highest = section_index
-					# Check if the current lesson matches the uniqueLessonId
-					if current_lesson_num == uniqueLessonId:
-						# If found, return True with the location details
-						return True, section_index, chapter_index, lesson_index
-
-	# After checking all lessons, determine the return value based on the highest_unique_lesson_num found
-	if highest_unique_lesson_num == -1:
-		# If no lessons with a uniqueLessonId were found at all
-		return False, 0, -1, -1
-	else:
-		# If uniqueLessonId was not found but other lessons with uniqueLessonId exist
-		return False, sec_index_of_highest+1, -1, -1
-'''
-
-
-
-def update_lesson_plan(detailedCoursePlan, lesson_plan, section_index):
-
-	# Update the course plan with the new lesson plan
-	detailedCoursePlan[section_index]["lessonPlan"] = lesson_plan
-
-	# Return the updated course plan
-	return detailedCoursePlan
+    contents = []
+    current_section = sectionId
+    current_lesson = lessonId
+    count = 0
+    while count < 3:
+        key = f"{current_section}.{current_lesson}"
+        if key in courseContent:
+            contents.append(f"Content from {key}:\n{courseContent[key]['content']}\n\n")
+            count += 1
+            logging.debug(f"contents: {contents}")
+        else:
+            # If the lessonId falls below -1, move to the previous section's highest lessonId
+            if current_lesson <= -1:
+                current_section -= 1
+                current_lesson = find_highest_lessonId_in_previous_section(courseContent, current_section)
+                logging.debug(f"contents: {contents}")
+                # If no more previous sections, break out of the loop
+                if current_lesson == -1:
+                    break
+                continue  # Skip the decrement below for this case as we just set current_lesson
+        current_lesson -= 1  # Move to the previous lessonId for the next iteration
+    return "".join(contents[::-1])  # Reverse the list to maintain the chronological order

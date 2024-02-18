@@ -99,14 +99,14 @@ def process_lesson_data(request):
 			response = {
 				"courseContent": 
 				{key: 
-					{"h1": "", "h2": "", "content": section_overview_dict}
+					{"h1": section_heading, "h2": "Module Overview", "content": section_overview_dict}
 				}
 			}
 			return (json.dumps(response), 200, headers)			
 		
 		else:
 			
-			lesson_content = get_lesson_content(openai_client, topic, detailedCoursePlan, courseContent, sectionId, lessonId)
+			lesson_content = get_lesson_content(openai_client, courseOptions, detailedCoursePlan, courseContent, sectionId, lessonId)
 			logging.debug(f"lesson_content: {lesson_content}")
 			try:
 				lesson_content_dict = json.loads(lesson_content)

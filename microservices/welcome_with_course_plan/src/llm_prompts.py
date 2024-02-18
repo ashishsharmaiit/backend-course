@@ -99,7 +99,7 @@ def asking_purpose(openai_client, topic, background, asking_purpose_test_mode):
 
 			response_pre = f"{welcome_content_dict['content']}"
 
-			response = {"courseContent": {"-1.-2": {"h1": "Welcome!", "h2": "", "content": response_pre}}}
+			response = {"courseContent": {"-1.0": {"h1": "", "h2": "", "content": response_pre}}}
 			logging.debug(f"response being sent from llm prompt: {response}")
 
 			welcome_content_test_file = os.path.join(current_dir, '../test_json/background_content_test_file.json')
@@ -147,7 +147,7 @@ def asking_duration(openai_client, topic, background, purposeOfLearning, asking_
 
 			response_pre = f"{welcome_content_dict['content']}"
 
-			response = {"courseContent": {"-1.-3": {"h1": "Welcome!", "h2": "", "content": response_pre}}}
+			response = {"courseContent": {"-1.1": {"h1": "", "h2": "", "content": response_pre}}}
 			logging.debug(f"response being sent from llm prompt: {response}")
 
 			welcome_content_test_file = os.path.join(current_dir, '../test_json/asking_duration.json')
@@ -189,14 +189,14 @@ def giving_course_plan(openai_client, topic, background, purposeOfLearning, dura
 			current_query = ''
 			current_query += f"topic: {topic}, background: {background}, purposeOfLearning: {purposeOfLearning}, durationInHours: {durationInHours}"
 
-			welcome_content = ask_llm(openai_client, instructions, current_query, max_tokens=3000, temperature = 0.4, model_engine="gpt-4-0125-preview")
+			welcome_content = ask_llm(openai_client, instructions, current_query, max_tokens=4000, temperature = 0.6, model_engine="gpt-4-0125-preview")
 			logging.debug(f"welcome_content: {welcome_content}")
 			
 			welcome_content_dict = json.loads(welcome_content)
 
 			response_pre = f"{welcome_content_dict['content']}"
 
-			response = {"courseContent": {"-1.-4": {"h1": "Welcome!", "h2": "", "content": response_pre}}}
+			response = {"courseContent": {"-1.2": {"h1": "Course Plan", "h2": "", "content": response_pre}}}
 			logging.debug(f"response being sent from llm prompt: {response}")
 
 			welcome_content_test_file = os.path.join(current_dir, '../test_json/giving_course_plan_test.json')

@@ -5,7 +5,7 @@ You extract the course plan from the text and convert it into JSON format as bel
 "sectionName": "<section name>",
 "sectionTopics": "<sub topics of section converted in a single string format>",
 "sectionObjective": "<importance or objective of the section>",
-"sectionTime": "<section time in hours>"
+"sectionTime": <section time in hours - should be just a number even if fractional.>
 },
 ///more sections
 ]

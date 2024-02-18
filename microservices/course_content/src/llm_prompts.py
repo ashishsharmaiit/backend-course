@@ -9,6 +9,7 @@ import tiktoken # type: ignore
 from openai_base import ask_llm
 import logging
 import math
+from utils import getPreviousContent
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -20,7 +21,7 @@ class SectionDetails(TypedDict):
 	sectionTime: Required[str]
 
 
-def get_lesson_content(openai_client, topic, detailedCoursePlan, sectionId):
+def get_lesson_content(openai_client, courseOptions, detailedCoursePlan, courseContent, sectionId, lessonId):
 
 	current_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -33,11 +34,20 @@ def get_lesson_content(openai_client, topic, detailedCoursePlan, sectionId):
 			with io.open(system_file, 'r', encoding='utf-8') as f:
 				instructions = f.read()
 
-		current_query = (
-			f"Learner is trying to learn '{topic}' "
-			f"with the following course plan {detailedCoursePlan}"
-			f"Give the JSON output for section index = {sectionId}. "
-			)
+			sectionNumber = sectionId + 1
+			section = detailedCoursePlan[sectionId]
+			sectionName = section.get('SectionName', '')
+			lessonNumber = lessonId + 1
+			lessonPlan = section.get('lessonPlan', [])
+			lessonDetails = lessonPlan[lessonId]
+			previousContent = getPreviousContent(courseContent, sectionId, lessonId)
+			current_query = (
+				f"courseInputs: {courseOptions}, "
+				f"coursePlan {detailedCoursePlan}, "
+				f"Number and Name of Module: {sectionNumber} and {sectionName}."
+				f"Number, Name and Topics of the Module: {lessonNumber} and {lessonDetails}."
+				f"Previous content that the learner has already learnt: {previousContent}"
+				)
 
 
 		section_overview_content = ask_llm(openai_client, instructions, current_query, max_tokens = 4000, temperature=0.4)

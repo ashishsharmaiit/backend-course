@@ -46,10 +46,10 @@ def create_course_plan(request):
 		detailedCoursePlan = courseData.get('detailedCoursePlan', '')
 		courseOptions = courseData.get('courseOptions', '')
 		courseContent = courseData.get('courseContent', {})
-		section_plan_narrative = courseContent['-1.-4']
+		section_plan_narrative = courseContent['-1.2']
 
 		# Check if detailedCoursePlan is blank and courseContent with key -1.-4 exists
-		if not detailedCoursePlan and '-1.-4' in courseContent and section_plan_narrative:
+		if not detailedCoursePlan and '-1.2' in courseContent and section_plan_narrative:
 			# Your logic here when detailedCoursePlan is blank and -1.-4 has content
 			response = get_section_plan(openai_client, section_plan_narrative, section_plan_test_mode)
 			logging.debug(f"response: {response}")

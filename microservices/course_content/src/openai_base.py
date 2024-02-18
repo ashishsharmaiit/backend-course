@@ -17,7 +17,7 @@ def get_openai_client():
 
 
 
-def ask_llm(openai_client, instructions: str, query: str, model_engine=openai_model, response_format={"type": "json_object"}, max_tokens=4000, temperature=0.5, use_assistants=False, openai_assistant=None, thread_id=None, presence_penalty=0.6, frequency_penalty=0.6) -> str:
+def ask_llm(openai_client, instructions: str, query: str, model_engine=openai_model, response_format={"type": "json_object"}, max_tokens=4000, temperature=0.6, use_assistants=False, openai_assistant=None, thread_id=None, presence_penalty=0.2, frequency_penalty=0.2) -> str:
 	messages = []
 	msg_content = None
 	if not use_assistants:

@@ -32,6 +32,7 @@ Your course planning follows these criteria:
 2. Structure the course into logically sequenced lessons for effective learning.
 3. Ensure lessons are suitable for LLM generation without repetition, hallucination, or lack of detail.
 4. Avoid content repetition across different sections of the course.
+5. Number of lessons should be strictly equal to the number of lessons mentioned.
 
 Output Structure: Craft your output in the following JSON format for clarity and effectiveness:
 

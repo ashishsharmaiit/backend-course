@@ -1,6 +1,6 @@
 import functions_framework
-from openai_base import get_openai_client
-from llm_prompts import asking_background, asking_purpose, asking_duration, giving_course_plan
+from utils.openai_base import get_openai_client
+from utils.llm_prompts import asking_background, asking_purpose, asking_duration, giving_course_plan
 import json
 import logging
 import os
@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
+with open(os.path.join(current_dir, './config.json'), 'r') as infile:
 	config = json.load(infile)
 
 

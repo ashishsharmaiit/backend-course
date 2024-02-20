@@ -3,13 +3,10 @@ import json
 import time
 import os
 from typing_extensions import TypedDict, Required
-import random
 import traceback
-import tiktoken # type: ignore
-from openai_base import ask_llm
+from .openai_base import ask_llm
 import logging
-import math
-from utils import getPreviousContent
+from .utils import getPreviousContent
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -95,11 +92,11 @@ def get_section_overview(openai_client, courseOptions, detailedCoursePlan, secti
 
 			section_overview_content = ask_llm(openai_client, instructions, current_query)
 			logging.debug(f"section_overview_content Received from llm: {section_overview_content}")
-
+			'''
 			section_overview_file = os.path.join(current_dir, '../test_json/section_overview.json')
 			with open(section_overview_file, 'w') as file:
 				json.dump(section_overview_content, file, indent=4)
-
+			'''
 			return section_overview_content
 
 		except Exception as e:

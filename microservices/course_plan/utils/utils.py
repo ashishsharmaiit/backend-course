@@ -1,5 +1,4 @@
 import json
-from llm_prompts import get_lesson_plan
 import os
 import logging
 

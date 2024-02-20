@@ -3,10 +3,8 @@ import json
 import time
 import os
 from typing_extensions import TypedDict, Required
-import random
 import traceback
-import tiktoken # type: ignore
-from openai_base import ask_llm
+from .openai_base import ask_llm
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -53,9 +51,11 @@ def asking_background(openai_client, topic, welcome_content_test_mode):
 			response = {"courseContent": {"-1.-1": {"h1": "Welcome!", "h2": "", "content": response_pre}}}
 			logging.debug(f"response being sent from llm prompt: {response}")
 
+			'''
 			welcome_content_test_file = os.path.join(current_dir, '../test_json/welcome_content_test_file.json')
 			with open(welcome_content_test_file, 'w') as file:
 				json.dump(response, file, indent=4)
+			'''
 
 			return response
 
@@ -101,11 +101,11 @@ def asking_purpose(openai_client, topic, background, asking_purpose_test_mode):
 
 			response = {"courseContent": {"-1.0": {"h1": "", "h2": "", "content": response_pre}}}
 			logging.debug(f"response being sent from llm prompt: {response}")
-
+			'''
 			welcome_content_test_file = os.path.join(current_dir, '../test_json/background_content_test_file.json')
 			with open(welcome_content_test_file, 'w') as file:
 				json.dump(response, file, indent=4)
-
+			'''
 			return response
 
 		except Exception as e:
@@ -149,11 +149,11 @@ def asking_duration(openai_client, topic, background, purposeOfLearning, asking_
 
 			response = {"courseContent": {"-1.1": {"h1": "", "h2": "", "content": response_pre}}}
 			logging.debug(f"response being sent from llm prompt: {response}")
-
+			'''
 			welcome_content_test_file = os.path.join(current_dir, '../test_json/asking_duration.json')
 			with open(welcome_content_test_file, 'w') as file:
 				json.dump(response, file, indent=4)
-
+			'''
 			return response
 
 		except Exception as e:
@@ -198,11 +198,11 @@ def giving_course_plan(openai_client, topic, background, purposeOfLearning, dura
 
 			response = {"courseContent": {"-1.2": {"h1": "Course Plan", "h2": "", "content": response_pre}}}
 			logging.debug(f"response being sent from llm prompt: {response}")
-
+			'''
 			welcome_content_test_file = os.path.join(current_dir, '../test_json/giving_course_plan_test.json')
 			with open(welcome_content_test_file, 'w') as file:
 				json.dump(response, file, indent=4)
-
+			'''
 			return response
 
 		except Exception as e:

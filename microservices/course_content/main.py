@@ -1,6 +1,6 @@
 import functions_framework
-from openai_base import get_openai_client
-from llm_prompts import get_section_overview, get_lesson_content
+from utils.openai_base import get_openai_client
+from utils.llm_prompts import get_section_overview, get_lesson_content
 import json
 import logging
 import os
@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
+with open(os.path.join(current_dir, './config.json'), 'r') as infile:
 	config = json.load(infile)
 
 section_overview_test_mode = config['section_overview_test_mode']

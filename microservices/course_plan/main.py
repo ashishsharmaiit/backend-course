@@ -1,8 +1,8 @@
 import functions_framework
-from openai_base import get_openai_client
-from llm_prompts import get_lesson_plan, get_section_plan
+from utils.openai_base import get_openai_client
+from utils.llm_prompts import get_lesson_plan, get_section_plan
 import json
-from utils import update_lesson_plan
+from utils.utils import update_lesson_plan
 import logging
 import os
 
@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(current_dir, '../config.json'), 'r') as infile:
+with open(os.path.join(current_dir, './config.json'), 'r') as infile:
 	config = json.load(infile)
 
 section_plan_test_mode = config['section_plan_test_mode']

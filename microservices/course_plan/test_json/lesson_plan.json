@@ -1,82 +1,26 @@
 [
     {
-        "lessonName": "Introduction to Transformers",
-        "lessonTopics": "Explains the fundamental concept of transformer models, highlighting their role in the development of advanced LLMs."
+        "lessonName": "Lesson 1: Introduction to TensorFlow",
+        "lessonTopics": "An overview of TensorFlow, its history, and its significance in the field of machine learning and computer vision. Understanding TensorFlow's ecosystem and how it supports deep learning and neural network projects."
     },
     {
-        "lessonName": "Why Transformers Matter",
-        "lessonTopics": "Discusses the importance of transformers in modern AI, focusing on their versatility and efficiency in handling sequential data."
+        "lessonName": "Lesson 2: TensorFlow's Place in Computer Vision",
+        "lessonTopics": "Exploring how TensorFlow is used in computer vision. Discussing various real-world applications of TensorFlow in image recognition, object detection, and more, to provide context and motivation."
     },
     {
-        "lessonName": "Understanding Self-Attention Mechanisms",
-        "lessonTopics": "Covers the self-attention mechanism at the heart of transformers, explaining how it allows models to weigh the importance of different words in a sentence."
+        "lessonName": "Lesson 3: Setting Up Your TensorFlow Environment",
+        "lessonTopics": "Step-by-step guide on setting up the TensorFlow environment on different platforms (Windows, macOS, Linux). Includes installation of necessary packages and verification of installation."
     },
     {
-        "lessonName": "Positional Encoding Explained",
-        "lessonTopics": "Describes positional encoding, detailing how transformers track the order of words or tokens in input data despite using self-attention."
+        "lessonName": "Lesson 4: Your First TensorFlow Program",
+        "lessonTopics": "Creating a simple TensorFlow program to understand its basic structure and functionality. This lesson will cover the execution of a basic computational graph."
     },
     {
-        "lessonName": "The Architecture of Transformers",
-        "lessonTopics": "Breaks down the architecture of a transformer model, including the encoder and decoder components."
+        "lessonName": "Lesson 5: Introduction to Computer Vision",
+        "lessonTopics": "Understanding the basics of computer vision, its challenges, and how it's used to interpret the visual world. Introduction to common computer vision tasks and problems."
     },
     {
-        "lessonName": "Introduction to Large Language Models (LLMs)",
-        "lessonTopics": "Defines LLMs and their significance in leveraging vast amounts of text data to understand and generate human-like text."
-    },
-    {
-        "lessonName": "Key Components of LLMs",
-        "lessonTopics": "Details the critical components that make up LLMs, such as layers, nodes, and activation functions."
-    },
-    {
-        "lessonName": "How LLMs Learn",
-        "lessonTopics": "Explains the training process of LLMs, including data preprocessing, model training, and fine-tuning."
-    },
-    {
-        "lessonName": "Transformer-Based LLMs",
-        "lessonTopics": "Discusses how transformer architecture underpins most of the current LLMs, enabling their advanced capabilities."
-    },
-    {
-        "lessonName": "Tokenization in LLMs",
-        "lessonTopics": "Explains the process of tokenization in LLMs, converting input text into a format that can be processed by the model."
-    },
-    {
-        "lessonName": "Understanding Embeddings",
-        "lessonTopics": "Covers the concept of embeddings in LLMs, which represent words or tokens as vectors in a high-dimensional space."
-    },
-    {
-        "lessonName": "The Role of Pretraining",
-        "lessonTopics": "Describes the pretraining phase in LLM development, where models learn from a large corpus of text before being fine-tuned for specific tasks."
-    },
-    {
-        "lessonName": "Fine-Tuning LLMs",
-        "lessonTopics": "Explores the fine-tuning process, adapting pretrained models to perform specific tasks or understand particular domains."
-    },
-    {
-        "lessonName": "Generative vs. Discriminative LLMs",
-        "lessonTopics": "Differentiates between generative and discriminative LLMs, focusing on their applications and capabilities."
-    },
-    {
-        "lessonName": "Attention Mechanisms in Depth",
-        "lessonTopics": "Provides a deeper look into various attention mechanisms, including multi-head attention, and their significance in model performance."
-    },
-    {
-        "lessonName": "Transformer Optimizations",
-        "lessonTopics": "Discusses optimizations and improvements made to the original transformer model, such as efficiency and scalability enhancements."
-    },
-    {
-        "lessonName": "Limitations of Transformers",
-        "lessonTopics": "Covers known limitations of transformer models, including computational demands and challenges in understanding context."
-    },
-    {
-        "lessonName": "Overcoming LLM Limitations",
-        "lessonTopics": "Explores strategies and research directions aimed at overcoming the limitations of LLMs, enhancing their understanding and generation capabilities."
-    },
-    {
-        "lessonName": "Evaluating LLM Performance",
-        "lessonTopics": "Discusses methods and metrics for evaluating the performance of LLMs, including accuracy, fluency, and coherence."
-    },
-    {
-        "lessonName": "The Future of Transformers and LLMs",
-        "lessonTopics": "Speculates on future developments in transformer and LLM technology, considering potential advancements and applications."
+        "lessonName": "Lesson 6: TensorFlow for Basic Image Processing",
+        "lessonTopics": "Using TensorFlow for basic image processing tasks. This includes reading and displaying images, basic manipulations like resizing and cropping, and understanding image data formats."
     }
 ]

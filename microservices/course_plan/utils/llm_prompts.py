@@ -3,10 +3,8 @@ import json
 import time
 import os
 from typing_extensions import TypedDict, Required
-import random
 import traceback
-import tiktoken # type: ignore
-from openai_base import ask_llm
+from .openai_base import ask_llm
 import logging
 import math
 
@@ -43,17 +41,25 @@ def get_lesson_plan(openai_client, courseOptions, detailedCoursePlan, section_de
 				with io.open(system_file, 'r', encoding='utf-8') as f:
 					instructions = f.read()
 
-			time_str = section_detail.get("sectionTime", "")
-			# Convert the time string to an integer or float. This example uses int, but use float() if you expect fractional hours.
+			time_str = section_detail.get("sectionTime", 0)
+
 			try:
-				time = float(time_str)
+				# Check if the value is already a number (int or float)
+				if isinstance(time_str, (int, float)):
+					time = float(time_str)
+				elif isinstance(time_str, str):
+					# Attempt conversion from string to float
+					time = float(time_str)
+				else:
+					raise TypeError("sectionTime must be a string or a number.")
 			except ValueError:
-				# Handle the case where the time string cannot be converted to an integer
-				print(f"Could not convert sectionTime '{time_str}' to an integer.")
+				print(f"Could not convert sectionTime '{time_str}' to a float.")
 				time = 0  # or some other default value or handling as appropriate
+			except TypeError as e:
+				print(e)
+				time = 0
 
-			print(f"Time for section : {time} hours")
-
+			print(f"Time for section: {time} hours")
 			number_of_lessons = math.ceil(time * 20)
 
 			'''Construct prompt query based on SectionDetails'''
@@ -76,11 +82,11 @@ def get_lesson_plan(openai_client, courseOptions, detailedCoursePlan, section_de
 
 			lessonPlan = lesson_plan_dict.get("lessonPlan", [])
 			logging.debug(f"Lesson Plan Received from LLM: {lessonPlan}")
-
+			'''
 			lesson_plan_file = os.path.join(current_dir, '../test_json/lesson_plan.json')
 			with open(lesson_plan_file, 'w') as file:
 				json.dump(lessonPlan, file, indent=4)
-
+			'''
 			return lessonPlan
 
 		except Exception as e:
@@ -124,11 +130,11 @@ def get_section_plan(openai_client, section_plan_narrative, section_plan_test_mo
 
 			section_plan = ask_llm(openai_client, instructions, current_query)
 			logging.debug(f"Section Plan Received from llm: {section_plan}")
-
+			'''
 			section_plan_file = os.path.join(current_dir, '../test_json/section_plan.json')
 			with open(section_plan_file, 'w') as file:
 				json.dump(section_plan, file, indent=4)
-
+			'''
 			return section_plan
 
 		except Exception as e:

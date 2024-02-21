@@ -9,33 +9,41 @@ logging.basicConfig(level=logging.INFO)
 
 USERS = {
     "ashish": "sharma",
-    "vihang": "agarwal",
     "anagh": "deshpande",
-}
+    "vihang": "agarwal"
+    }
 
 HARDCODED_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
 @functions_framework.http
 def authenticate_user(request):
+    # Set CORS headers for preflight requests
     if request.method == 'OPTIONS':
-        headers = ...
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '3600'
+        }
         return ('', 204, headers)
     
+    # Set CORS headers for main requests
     headers = {'Access-Control-Allow-Origin': '*'}
 
+    # Ensure that we have a JSON request
     if request.headers['Content-Type'] == 'application/json':
         request_json = request.get_json(silent=True)
-        username = request_json.get('userId')
+        # Adjust these fields to match the Redux action payload
+        username = request_json.get('userId')  # Changed from 'username' to 'userId'
         password = request_json.get('password')
 
-        logging.info(f'Authenticating user: {username}')  # Log the username being authenticated
-
         if username in USERS and USERS[username] == password:
-            logging.info(f'User authenticated: {username}')  # Log successful authentication
+            # Successful authentication
+            # For demonstration, returning a hardcoded token; replace with dynamic token generation in real applications
             return jsonify({"token": HARDCODED_TOKEN}), 200, headers
         else:
-            logging.warning(f'Invalid credentials for user: {username}')  # Log failed authentication
+            # Authentication failed
             return jsonify({"error": "Invalid credentials"}), 401, headers
     else:
-        logging.error('Unsupported Content-Type')
         return make_response('Content-Type not supported!', 415, headers)
+

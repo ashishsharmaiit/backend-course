@@ -113,7 +113,7 @@ def ask_llm(openai_client, instructions: str, query: str, model_engine="gpt-3.5-
 
 
 @functions_framework.http
-def query_resolver(request):
+def http_query_resolver(request):
 	if request.method == 'OPTIONS':
 		headers = {
 			'Access-Control-Allow-Origin': '*',
@@ -165,11 +165,14 @@ def main_query_resolver(user_query: str, course_content: CourseContent):
 				instructions = f.read()
 
 		instructions += "Here's the relevant chapter context information for user queries: \n\n"
-		instructions += f"{course_content['h1']} \n\n"
-		instructions += f"{course_content['h2']} \n\n"
-		instructions += f"{course_content['content']} \n\n"
+		if len(course_content.get('h1', '')) > 0:
+			instructions += f"{course_content['h1']} \n\n"
+		if len(course_content.get('h2', '')) > 0:
+			instructions += f"{course_content['h2']} \n\n"
+		if len(course_content.get('content', '')) > 0:
+			instructions += f"{course_content['content']} \n\n"
 
-		response = ask_llm(instructions, user_query)
+		response = ask_llm(openai_client, instructions, user_query)
 		response = {'response': response,
 			'status': 200,
 			'error': None,

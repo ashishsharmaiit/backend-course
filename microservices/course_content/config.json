@@ -3,8 +3,8 @@
     "mongo_pass": "SocratiQ123@",
     "mongo_cluster_url": "cluster0.2ajha3q.mongodb.net",
     "openai_key_primary": "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",
-    "lesson_content_test_mode": false,
-    "section_overview_test_mode": false,
+    "lesson_content_test_mode": true,
+    "section_overview_test_mode": true,
     "openai_model": "gpt-4-1106-preview",
     "__comment_openai_model": "choices are gpt-3.5-turbo-0125, gpt-4-1106-preview (20x costlier), gpt-4 (40x-60x costlier)"
 }

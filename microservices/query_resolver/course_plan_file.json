@@ -1,6 +1,6 @@
 {
-    "response": "In the context of the lesson, the concept of self-attention refers to a mechanism that allows each word in a sequence to be related to every other word. This helps capture subtle connections and dependencies between words that may be overlooked by models processing text in a linear manner. Self-attention is important for tasks like translation or summarization, where understanding the context is essential for accurate processing of the input sequence.",
+    "response": "In the context of the lesson, \"open-source\" refers to software that is released with a license that allows the source code to be freely used, modified, and distributed by anyone. This means that the code is open for the public to view, edit, and contribute to. Open-source software promotes collaboration and transparency within the development community. It often leads to high-quality, reliable, and secure software due to the collective effort of developers worldwide.",
     "status": 200,
     "error": null,
-    "timestamp": 1708539723
+    "timestamp": 1708725488
 }
